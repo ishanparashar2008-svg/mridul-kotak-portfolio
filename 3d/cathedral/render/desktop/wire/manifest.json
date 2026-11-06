@@ -1,0 +1,17 @@
+{
+  "count": 120,
+  "width": 1600,
+  "height": 900,
+  "format": "png",
+  "prefix": "frame_",
+  "pad": 4,
+  "ext": ".png",
+  "fps": 30,
+  "frames": [
+    1,
+    120,
+    1
+  ],
+  "transparent": false,
+  "bytes": 105885400
+}
