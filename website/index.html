@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en" class="is-loading">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mridul Kotak | 3D Animator &amp; Environment Designer</title>
+  <meta name="description" content="Mridul Kotak is a 3D animator and environment designer building cinematic worlds, characters and motion for film, games and brands." />
+  <meta name="author" content="Mridul Kotak" />
+  <meta name="theme-color" content="#0a0b0d" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Social sharing. After deploying, change og:image and og:url to full https:// URLs on your domain. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Mridul Kotak" />
+  <meta property="og:title" content="Mridul Kotak | 3D Animator &amp; Environment Designer" />
+  <meta property="og:description" content="Cinematic worlds, characters and motion for film, games and brands." />
+  <meta property="og:image" content="/assets/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Mridul Kotak, 3D Animator and Environment Designer, next to an iridescent knot" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <!-- Fonts: Archivo (variable weight + width) for display, JetBrains Mono for UI labels -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/loader.css" />
+  <link rel="stylesheet" href="css/cursor.css" />
+  <link rel="stylesheet" href="css/hero.css" />
+  <link rel="stylesheet" href="css/making.css" />
+  <link rel="stylesheet" href="css/world.css" />
+  <link rel="stylesheet" href="css/render-frame.css" />
+  <link rel="stylesheet" href="css/about.css" />
+
+  <!-- Opened straight from disk? Flag it so the loader can explain instead of hanging. -->
+  <script>
+    if (location.protocol === "file:") document.documentElement.classList.add("is-file");
+  </script>
+
+  <!-- Bare module specifiers resolve to pinned, minified CDN builds. No build step. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+        "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/+esm",
+        "gsap/ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/ScrollTrigger/+esm"
+      }
+    }
+  </script>
+  <!-- Start downloading the 3D engine while the loader plays -->
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" />
+  <script type="module" src="js/main.js"></script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Mridul Kotak",
+      "jobTitle": "3D Animator and Environment Designer",
+      "description": "3D animator and environment designer building cinematic worlds, characters and motion for film, games and brands.",
+      "email": "mailto:unrealmridul5@gmail.com",
+      "telephone": "+91 78988 48824",
+      "sameAs": [
+        "https://www.instagram.com/mridul_krtva.kavi/",
+        "https://www.linkedin.com/in/mridulkotak/",
+        "https://www.upwork.com/freelancers/~01532f2794539c02fb",
+        "https://www.youtube.com/@Mridulkotak",
+        "https://open.spotify.com/artist/2gRJLmyIBhbhLamTyszG3t"
+      ]
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ Loader: a render in progress ============ -->
+  <div class="loader" id="loader" role="status" aria-live="polite" aria-label="Loading portfolio">
+    <div class="loader__tiles" data-loader-tiles aria-hidden="true"></div>
+
+    <div class="loader__panel">
+      <p class="loader__file-note">
+        This site was opened straight from disk, and browsers block its 3D scene there.
+        Close this tab and double-click <strong>Open Website.bat</strong> in the project folder.
+      </p>
+
+      <div class="loader__readout" aria-hidden="true">
+        <p class="loader__head"><span data-loader-status>Rendering</span><span data-loader-scene>hero.scene</span></p>
+        <p class="loader__samples">
+          <span class="loader__label">Sampling</span>
+          <span class="loader__count"><span data-loader-samples>1</span><span class="loader__total">/256</span></span>
+        </p>
+        <div class="loader__bar"><span data-loader-bar></span></div>
+        <dl class="loader__stats">
+          <div><dt>Frame</dt><dd data-loader-frame>0001</dd></div>
+          <div><dt>Time</dt><dd data-loader-time>00:00.00</dd></div>
+          <div><dt>Tiles</dt><dd data-loader-tilecount>0/0</dd></div>
+          <div><dt>Mem</dt><dd data-loader-mem>0.0M</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Header ============ -->
+  <header class="site-header">
+    <a class="brand" href="./" data-brand>Mridul Kotak</a>
+    <div class="site-header__right">
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="#work">Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <!-- Ambient sound: off by default, remembered per browser -->
+      <button class="sound-toggle" type="button" data-sound-toggle aria-pressed="false" aria-label="Ambient sound">
+        <span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="sound-toggle__label" data-sound-label>Sound off</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ Hero ============ -->
+    <section class="hero" data-hero data-stage="wireframe" aria-labelledby="hero-title">
+      <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
+
+      <div class="hero__content">
+        <h1 class="hero__title" id="hero-title" data-hero-name>Mridul Kotak</h1>
+        <p class="hero__role" data-hero-role>3D Animator &amp; Environment Designer</p>
+        <div class="hero__actions" data-hero-actions>
+          <a class="btn" href="#showreel" data-hero-reel aria-haspopup="dialog">
+            <span class="btn__icon" aria-hidden="true"></span>
+            <span class="btn__label">Watch Showreel</span>
+            <span class="btn__meta" data-hero-reel-length>01:48</span>
+          </a>
+          <a class="link-enter" href="#work">Enter the work</a>
+        </div>
+      </div>
+
+      <!-- Viewport shading switcher. Auto-advances during the intro, clickable after (keys 1 to 4). -->
+      <div class="hero__modes" data-hero-modes role="group" aria-label="Viewport shading">
+        <button class="mode-btn" type="button" data-mode="wireframe" aria-pressed="true"><span class="mode-btn__key">1</span>Wireframe</button>
+        <button class="mode-btn" type="button" data-mode="clay" aria-pressed="false"><span class="mode-btn__key">2</span>Clay</button>
+        <button class="mode-btn" type="button" data-mode="lit" aria-pressed="false"><span class="mode-btn__key">3</span>Lit</button>
+        <button class="mode-btn" type="button" data-mode="final" aria-pressed="false"><span class="mode-btn__key">4</span>Final</button>
+      </div>
+    </section>
+
+    <!-- ============ Watch a frame get made ============ -->
+    <!-- A Blender shot (3d/build_cathedral.py) that renders in passes as you scroll:
+         wireframe, clay, lighting, final. Frames load late (js/making.js).
+         Readouts show the finished state until the script takes over, which is
+         also what no-JS and reduced-motion visitors see. -->
+    <section class="making" id="making" data-making data-stage="final" aria-labelledby="making-title"
+      data-desktop="assets/seq/cathedral/desktop/manifest.json"
+      data-mobile="assets/seq/cathedral/mobile/manifest.json">
+      <h2 class="visually-hidden" id="making-title">Every frame starts as a wireframe: a floating fragment of the Saltwater Cathedral rendering in four passes</h2>
+      <div class="making__stage">
+        <canvas class="making__canvas" data-making-canvas aria-hidden="true"></canvas>
+        <!-- Reduced motion: the finished frame as a still (css/making.css loads it only then) -->
+        <div class="making__still" role="img"
+          aria-label="Saltwater Cathedral, final render: a broken fragment of a flooded gothic nave floating in the dark, light shafts falling through its lancet window (placeholder scene)"></div>
+        <noscript>
+          <img class="making__still making__still--noscript" src="assets/seq/cathedral/desktop/frame_0120.webp" width="1600" height="900" alt="Saltwater Cathedral, final render (placeholder scene)" />
+        </noscript>
+
+        <div class="making__hud" aria-hidden="true">
+          <p class="making__passes">
+            <span class="making__pass" data-pass="wireframe" data-from="0" data-to="0.26" data-fade="0.006">Pass 01 · Wireframe</span>
+            <span class="making__pass" data-pass="clay" data-from="0.26" data-to="0.49" data-fade="0.006">Pass 02 · Clay</span>
+            <span class="making__pass" data-pass="lit" data-from="0.49" data-to="0.72" data-fade="0.006">Pass 03 · Lighting</span>
+            <span class="making__pass" data-pass="final" data-from="0.72" data-to="1" data-fade="0.006">Pass 04 · Final</span>
+          </p>
+          <p class="making__file">saltwater_cathedral.blend · cam_01 · 35mm</p>
+        </div>
+
+        <p class="making__title" aria-hidden="true" data-from="0" data-to="0.3" data-fade="0.04">Every frame starts as a wireframe.</p>
+
+        <div class="making__readout" aria-hidden="true">
+          <p class="making__samples">
+            <span>Sampling</span>
+            <span class="making__count"><span data-making-samples>256</span><span class="making__total">/256</span></span>
+          </p>
+          <div class="making__bar"><span data-making-bar style="transform: scaleX(1)"></span></div>
+          <dl class="making__stats">
+            <div><dt>Frame</dt><dd data-making-frame>120/120</dd></div>
+            <div><dt>Tiles</dt><dd data-making-tiles>144/144</dd></div>
+            <div><dt>Pass</dt><dd data-making-pass>04/04</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ The work: projects floating in the void ============ -->
+    <!-- Full mode: a tall section with a sticky 3D stage the camera flies through.
+         Lite mode (phones, low-power devices): a vertical list of project cards. -->
+    <section class="work" id="work" data-work aria-labelledby="work-title">
+      <div class="work__stage">
+        <canvas class="work__canvas" data-world-canvas aria-hidden="true"></canvas>
+
+        <div class="work__intro" data-world-intro>
+          <h2 class="work__title" id="work-title">Selected work</h2>
+          <p class="work__hint">
+            <span data-world-count>5 projects</span>
+            <span class="work__hint-fine">Hover an object to inspect it, click to fly in. Keyboard: Tab through the projects.</span>
+            <span class="work__hint-touch">Tap an object to fly in.</span>
+          </p>
+        </div>
+
+        <!-- Annotation that follows the hovered (or focused) object -->
+        <div class="world-label" data-world-label aria-hidden="true">
+          <span class="world-label__line"></span>
+          <span class="world-label__text">
+            <span class="world-label__title" data-label-title></span>
+            <span class="world-label__meta" data-label-meta></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Keyboard route through the world: focusing a link flies the camera to
+           that project; Enter flies into it. Visible while focused. -->
+      <nav class="work__links" aria-label="Projects (keyboard)">
+        <p class="work__links-title" aria-hidden="true">Projects</p>
+        <ol data-world-links></ol>
+      </nav>
+
+      <!-- Lite mode: project cards -->
+      <ol class="cards" data-cards hidden></ol>
+
+      <!-- Fixed overlay while inside the world -->
+      <div class="world-ui" data-world-ui>
+        <div class="world-ui__now">
+          <p class="counter" aria-live="polite">
+            <span class="counter__now" data-counter-now>01</span>
+            <span class="counter__total">/ <span data-counter-total>05</span></span>
+          </p>
+          <p class="world-ui__title" data-active-title></p>
+          <div class="world-ui__actions">
+            <a class="world-ui__open" href="#" data-active-open>View project</a>
+            <button class="world-ui__top" type="button" data-to-top>Back to top</button>
+          </div>
+        </div>
+
+        <nav class="index" aria-label="Project index">
+          <button class="index__toggle" type="button" data-index-toggle aria-expanded="false" aria-controls="project-index">Index</button>
+          <ol class="index__list" id="project-index" data-index-list></ol>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ============ About ============ -->
+    <section class="about" id="about" data-about aria-labelledby="about-title">
+      <figure class="about__portrait render-frame" data-portrait>
+        <img class="render-frame__img" data-portrait-img alt="" width="1200" height="1500" decoding="async" />
+        <canvas class="render-frame__canvas" data-portrait-canvas aria-hidden="true"></canvas>
+        <p class="render-frame__readout" data-portrait-readout aria-hidden="true">Queued</p>
+      </figure>
+
+      <div class="about__body">
+        <h2 class="section-title" id="about-title">About</h2>
+        <div class="about__bio" data-bio></div>
+
+        <div class="about__cols">
+          <div class="settings" data-settings>
+            <h3 class="label">Render settings</h3>
+            <dl class="settings__list" data-skills></dl>
+          </div>
+
+          <div class="about__side">
+            <div data-experience-block>
+              <h3 class="label">Experience</h3>
+              <ol class="jobs" data-experience></ol>
+            </div>
+            <div data-clients-block>
+              <h3 class="label">Selected clients</h3>
+              <ul class="clients" data-clients></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Contact ============ -->
+    <section class="contact" id="contact" data-contact aria-labelledby="contact-title">
+      <h2 class="label" id="contact-title">Contact</h2>
+      <p class="contact__availability" data-availability></p>
+
+      <button class="contact__email" type="button" data-copy-email>
+        <span class="contact__email-text" data-email-text>unrealmridul5@gmail.com</span>
+        <span class="contact__email-hint">Click to copy</span>
+      </button>
+      <a class="contact__mailto" data-mailto href="mailto:unrealmridul5@gmail.com">Or open it in your mail app</a>
+
+      <a class="contact__phone" data-phone href="tel:+917898848824">
+        <span class="contact__phone-label">Phone</span>
+        <span data-phone-text>+91 78988 48824</span>
+      </a>
+
+      <ul class="socials" data-socials aria-label="Social profiles"></ul>
+
+      <footer class="site-footer">
+        <p>&copy; <span data-year>2026</span> <span data-footer-name>Mridul Kotak</span></p>
+        <a class="site-footer__top" href="#main">Back to top</a>
+      </footer>
+    </section>
+  </main>
+
+  <!-- Showreel overlay (native dialog: Esc, focus trap, click outside to close) -->
+  <dialog class="reel" data-reel aria-label="Showreel">
+    <button class="reel__close" type="button" data-reel-close>Close <span class="reel__key" aria-hidden="true">Esc</span></button>
+    <div class="reel__frame" data-reel-frame></div>
+  </dialog>
+
+  <!-- "Copied" toast -->
+  <p class="toast" data-toast role="status" aria-live="polite"></p>
+
+  <!-- Covers the screen at the end of the fly-in, before the project page loads -->
+  <div class="page-fade" data-page-fade aria-hidden="true"></div>
+
+  <!-- Cinematic film grain, above everything except the cursor -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Custom cursor: a tiny XYZ transform gizmo -->
+  <div class="cursor" data-cursor aria-hidden="true">
+    <div class="cursor__gizmo">
+      <span class="cursor__axis cursor__axis--z"></span>
+      <span class="cursor__axis cursor__axis--y"></span>
+      <span class="cursor__axis cursor__axis--x"></span>
+      <span class="cursor__origin"></span>
+    </div>
+  </div>
+</body>
+</html>

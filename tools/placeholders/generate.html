@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Placeholder generator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <style>
+    body { margin: 0; padding: 24px; background: #0a0b0d; color: #ecebe6; font: 13px/1.6 ui-monospace, Consolas, monospace; }
+    canvas { display: block; max-width: 640px; height: auto; margin-top: 16px; border: 1px solid #222; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <p>Renders placeholder art for every project in website/data/projects.json:
+  four breakdown passes of one shot, three gallery angles, and a GLB diorama.
+  Output goes to website/assets/placeholders/&lt;id&gt;/.</p>
+  <pre id="log"></pre>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+    import { GLTFExporter } from "three/addons/exporters/GLTFExporter.js";
+    import { getShape } from "/website/js/shapes.js";
+
+    const log = (msg) => (document.getElementById("log").textContent += msg + "\n");
+
+    // Same looks as the site (js/world.js FINISHES)
+    const FINISHES = {
+      satin:      { roughness: 0.42, metalness: 0.1, clearcoat: 0.6, iridescence: 0 },
+      metal:      { roughness: 0.3,  metalness: 1,   clearcoat: 0.3, iridescence: 0 },
+      iridescent: { roughness: 0.2,  metalness: 1,   clearcoat: 1,   iridescence: 1 },
+      glossy:     { roughness: 0.12, metalness: 0,   clearcoat: 1,   iridescence: 0 },
+    };
+    const ACCENT = new THREE.Color("#f26b38");
+    // WebP is roughly a third smaller than JPEG for the same look.
+    const FORMAT = { type: "image/webp", quality: 0.82, ext: "webp" };
+    const BG = new THREE.Color("#0a0b0d");
+
+    const VIEWS = {
+      main:  { w: 1600, h: 900, fov: 32, pos: [0.4, 2.1, 8.2],   target: [0, 1.35, 0] },
+      bust:  { w: 1200, h: 1500, fov: 28, pos: [0.6, 1.75, 5.4], target: [0, 1.45, 0] },
+      og:    { w: 1200, h: 630, fov: 30, pos: [0, 0, 9.5],      target: [-1.9, 0, 0] },
+      wide:  { w: 1600, h: 900, fov: 38, pos: [6.5, 4.2, 9.5],   target: [0, 1.2, -0.6] },
+      close: { w: 1200, h: 900, fov: 30, pos: [1.9, 2.3, 3.6],   target: [0, 1.7, 0] },
+      low:   { w: 1200, h: 900, fov: 42, pos: [-4.2, 0.55, 4.6], target: [0, 1.4, -0.5] },
+    };
+
+    function seeded(str) {
+      let h = 1779033703 ^ str.length;
+      for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 3432918353), (h = (h << 13) | (h >>> 19));
+      return () => {
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        return ((h ^= h >>> 16) >>> 0) / 4294967296;
+      };
+    }
+
+    /** The diorama: hero shape floating over a plinth, monoliths behind, two orbs. */
+    function compose(project) {
+      const rnd = seeded(project.id);
+      const shape = getShape(project.shape);
+      const items = [];
+      items.push({ role: "hero", geo: shape.surface, wire: shape.wire, pos: [0, 1.8, 0], rot: [rnd() * 0.8, rnd() * 6, rnd() * 0.4], scale: 1.05 });
+      items.push({ role: "stone", geo: new THREE.CylinderGeometry(1.25, 1.38, 0.36, 72), wireSrc: new THREE.CylinderGeometry(1.25, 1.38, 0.36, 20, 1), pos: [0, 0.18, 0] });
+      for (let k = 0; k < 4; k++) {
+        const w = 0.35 + rnd() * 0.5, h = 1.3 + rnd() * 2.9, d = 0.35 + rnd() * 0.4;
+        const geo = new THREE.BoxGeometry(w, h, d);
+        items.push({ role: "mono", geo, wireSrc: new THREE.BoxGeometry(w, h, d, 1, 4, 1), pos: [-3.3 + k * 2.2 + (rnd() - 0.5) * 0.6, h / 2, -2.3 - rnd() * 1.8], rot: [0, rnd() * 0.6 - 0.3, 0] });
+      }
+      items.push({ role: "orb", geo: new THREE.SphereGeometry(0.22, 48, 32), wireSrc: new THREE.SphereGeometry(0.22, 12, 8), pos: [1.9, 0.22, 1.1] });
+      items.push({ role: "orb", geo: new THREE.SphereGeometry(0.14, 48, 32), wireSrc: new THREE.SphereGeometry(0.14, 10, 6), pos: [-1.7, 0.14, 0.9] });
+      return items;
+    }
+
+    function place(obj, it) {
+      obj.position.set(...it.pos);
+      if (it.rot) obj.rotation.set(...it.rot);
+      if (it.scale) obj.scale.setScalar(it.scale);
+      return obj;
+    }
+
+    function finalMaterial(project, role) {
+      if (role === "hero") {
+        const f = FINISHES[project.finish] || FINISHES.satin;
+        return new THREE.MeshPhysicalMaterial({ color: project.accent || "#d4d2dc", ...f, iridescenceIOR: 1.45, iridescenceThicknessRange: [180, 820], clearcoatRoughness: 0.12 });
+      }
+      if (role === "stone") return new THREE.MeshStandardMaterial({ color: "#26272b", roughness: 0.55 });
+      if (role === "mono") return new THREE.MeshStandardMaterial({ color: "#1c1d21", roughness: 0.35, metalness: 0.5 });
+      return new THREE.MeshStandardMaterial({ color: "#cfd2d8", roughness: 0.15, metalness: 1 });
+    }
+
+    /** Build the scene for one pass. */
+    function buildScene(project, items, pass, renderer) {
+      const scene = new THREE.Scene();
+      const accent = new THREE.Color(project.accent || "#d4d2dc");
+
+      if (pass === "wireframe") {
+        scene.background = BG;
+        const grid = new THREE.GridHelper(40, 40, 0x3a3230, 0x1d1e22);
+        scene.add(grid);
+        for (const it of items) {
+          const wire = it.wire || new THREE.WireframeGeometry(it.wireSrc);
+          const mat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: it.role === "hero" ? 1 : 0.45, toneMapped: false });
+          scene.add(place(new THREE.LineSegments(wire, mat), it));
+        }
+        return scene;
+      }
+
+      const floorColor = { clay: "#6d6a66", lighting: "#34332f", final: "#0e0f12" }[pass];
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(80, 80),
+        new THREE.MeshStandardMaterial({ color: floorColor, roughness: pass === "final" ? 0.3 : 0.95, metalness: pass === "final" ? 0.2 : 0 })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      for (const it of items) {
+        let mat;
+        if (pass === "clay") mat = new THREE.MeshStandardMaterial({ color: "#b8b1a6", roughness: 0.92 });
+        else if (pass === "lighting") mat = new THREE.MeshStandardMaterial({ color: "#8e8a84", roughness: 0.7 });
+        else mat = finalMaterial(project, it.role);
+        const m = place(new THREE.Mesh(it.geo, mat), it);
+        m.castShadow = m.receiveShadow = true;
+        scene.add(m);
+      }
+
+      const key = new THREE.DirectionalLight(0xffffff, 1);
+      key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048);
+      Object.assign(key.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8, near: 1, far: 40 });
+      key.shadow.bias = -0.0004;
+      key.shadow.normalBias = 0.02;
+      key.shadow.radius = 6;
+      scene.add(key);
+
+      if (pass === "clay") {
+        scene.background = new THREE.Color("#1d1e21");
+        scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3a3a, 1.3));
+        key.position.set(-5, 8, 6);
+        key.intensity = 1.1;
+      } else if (pass === "lighting") {
+        scene.background = new THREE.Color("#0c0d10");
+        scene.add(new THREE.HemisphereLight(0xe6ebff, 0x1b1813, 0.1));
+        key.color.set("#ffd9b0");
+        key.position.set(-6, 7, 4);
+        key.intensity = 3.2;
+        const rim = new THREE.DirectionalLight(0x9fb8ff, 2.6);
+        rim.position.set(5, 4, -6);
+        const fill = new THREE.PointLight(accent, 14, 14, 2);
+        fill.position.set(3.5, 1.5, 3.5);
+        scene.add(rim, fill);
+      } else {
+        scene.background = BG;
+        scene.fog = new THREE.FogExp2(BG, 0.045);
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+        scene.environmentIntensity = 0.35;
+        pmrem.dispose();
+        key.color.set("#ffe7cf");
+        key.position.set(-6, 8, 5);
+        key.intensity = 2.2;
+        const rim = new THREE.DirectionalLight(0xa9bcff, 3);
+        rim.position.set(5, 4, -6);
+        const glow = new THREE.PointLight(accent, 12, 9, 2);
+        glow.position.set(1.6, 2.6, 2.2);
+        scene.add(rim, glow);
+      }
+      return scene;
+    }
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(1);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    async function save(path, blob) {
+      const res = await fetch(`/save?path=${encodeURIComponent(path)}`, { method: "POST", body: blob });
+      if (!res.ok) throw new Error(`${path}: ${await res.text()}`);
+    }
+
+    function shoot(scene, viewName) {
+      const v = VIEWS[viewName];
+      renderer.setSize(v.w, v.h, false);
+      const cam = new THREE.PerspectiveCamera(v.fov, v.w / v.h, 0.1, 200);
+      cam.position.set(...v.pos);
+      cam.lookAt(...v.target);
+      renderer.render(scene, cam);
+      return new Promise((r) => renderer.domElement.toBlob(r, FORMAT.type, FORMAT.quality));
+    }
+
+    async function exportModel(project, items) {
+      const group = new THREE.Group();
+      group.name = `${project.id}-diorama`;
+      for (const it of items) {
+        const m = place(new THREE.Mesh(it.geo, finalMaterial(project, it.role)), it);
+        m.name = it.role;
+        group.add(m);
+      }
+      const buf = await new GLTFExporter().parseAsync(group, { binary: true });
+      return new Blob([buf], { type: "model/gltf-binary" });
+    }
+
+
+    // ---- Portrait placeholder: a sculpted bust, wireframe + final ------------
+    function bustItems() {
+      return [
+        { role: "skin", geo: new THREE.SphereGeometry(0.42, 72, 56).scale(0.86, 1.06, 0.95), wireSrc: new THREE.SphereGeometry(0.42, 16, 12).scale(0.86, 1.06, 0.95), pos: [0, 1.98, 0] },
+        { role: "skin", geo: new THREE.CylinderGeometry(0.15, 0.19, 0.42, 40), wireSrc: new THREE.CylinderGeometry(0.15, 0.19, 0.42, 12, 2), pos: [0, 1.52, -0.02] },
+        { role: "skin", geo: new THREE.CapsuleGeometry(0.34, 1.2, 16, 48), wireSrc: new THREE.CapsuleGeometry(0.34, 1.2, 4, 12), pos: [0, 1.12, -0.04], rot: [0, 0, Math.PI / 2] },
+        { role: "cloth", geo: new THREE.CylinderGeometry(0.78, 0.62, 1.3, 64), wireSrc: new THREE.CylinderGeometry(0.78, 0.62, 1.3, 16, 3), pos: [0, 0.42, -0.04] },
+      ];
+    }
+
+    function bustScene(pass) {
+      const scene = new THREE.Scene();
+      scene.background = BG;
+      const items = bustItems();
+      if (pass === "wireframe") {
+        for (const it of items) {
+          const mat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.85, toneMapped: false });
+          scene.add(place(new THREE.LineSegments(new THREE.WireframeGeometry(it.wireSrc), mat), it));
+        }
+        return scene;
+      }
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      scene.environmentIntensity = 0.3;
+      pmrem.dispose();
+      for (const it of items) {
+        const mat = it.role === "skin"
+          ? new THREE.MeshPhysicalMaterial({ color: "#cdbfae", roughness: 0.48, clearcoat: 0.35, sheen: 0.4, sheenColor: new THREE.Color("#f2d6c2") })
+          : new THREE.MeshStandardMaterial({ color: "#26272c", roughness: 0.7 });
+        scene.add(place(new THREE.Mesh(it.geo, mat), it));
+      }
+      const key = new THREE.DirectionalLight(0xffe4cc, 2.6);
+      key.position.set(-3, 4, 4);
+      const rim = new THREE.DirectionalLight(0xa9bcff, 3.2);
+      rim.position.set(3, 3, -3);
+      const accentRim = new THREE.PointLight(ACCENT, 10, 8, 2);
+      accentRim.position.set(1.8, 1.9, -0.8);
+      scene.add(key, rim, accentRim);
+      return scene;
+    }
+
+    // ---- Open Graph image: the hero knot plus the name --------------------------
+    async function ogImage(artist) {
+      const scene = new THREE.Scene();
+      scene.background = BG;
+      scene.fog = new THREE.FogExp2(BG, 0.03);
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      scene.environmentIntensity = 0.3;
+      pmrem.dispose();
+      const knot = new THREE.Mesh(
+        new THREE.TorusKnotGeometry(1.1, 0.36, 320, 56, 2, 3),
+        new THREE.MeshPhysicalMaterial({ color: "#d4d2dc", metalness: 1, roughness: 0.22, clearcoat: 1, iridescence: 1, iridescenceIOR: 1.45, iridescenceThicknessRange: [180, 820] })
+      );
+      knot.rotation.set(0.5, 0.6, 0);
+      knot.position.set(-0.2, 0, 0);
+      const key = new THREE.PointLight(0xfff2e8, 40, 14, 2);
+      key.position.set(-1.8, 1.4, 2.4);
+      const rim = new THREE.DirectionalLight(0xa9bcff, 2.4);
+      rim.position.set(4, 3, -6);
+      scene.add(knot, key, rim);
+
+      const v = VIEWS.og;
+      renderer.setSize(v.w, v.h, false);
+      const cam = new THREE.PerspectiveCamera(v.fov, v.w / v.h, 0.1, 100);
+      cam.position.set(...v.pos);
+      cam.lookAt(...v.target);
+      renderer.render(scene, cam);
+
+      await document.fonts.load('800 80px "Archivo"');
+      await document.fonts.load('400 24px "JetBrains Mono"');
+      const c = document.createElement("canvas");
+      c.width = v.w;
+      c.height = v.h;
+      const ctx = c.getContext("2d");
+      ctx.drawImage(renderer.domElement, 0, 0);
+      const fade = ctx.createLinearGradient(0, 0, v.w * 0.6, 0);
+      fade.addColorStop(0, "rgba(10,11,13,0.92)");
+      fade.addColorStop(1, "rgba(10,11,13,0)");
+      ctx.fillStyle = fade;
+      ctx.fillRect(0, 0, v.w, v.h);
+      ctx.fillStyle = "#ecebe6";
+      ctx.fontStretch = "expanded";
+      ctx.font = '800 92px "Archivo"';
+      const words = artist.name.toUpperCase().split(" ");
+      words.forEach((w, i) => ctx.fillText(w, 72, 300 + i * 92));
+      ctx.font = '400 26px "JetBrains Mono"';
+      ctx.fillStyle = "#8b8d92";
+      ctx.fillText(artist.role, 74, 300 + words.length * 92 + 30);
+      ctx.fillStyle = "#f26b38";
+      ctx.fillRect(74, 214, 56, 3);
+      return new Promise((r) => c.toBlob(r, "image/jpeg", 0.86));
+    }
+
+    // ---- Home-screen icon from the favicon ----------------------------------------
+    async function touchIcon() {
+      const img = new Image();
+      img.src = "/website/assets/favicon.svg";
+      await img.decode();
+      const c = document.createElement("canvas");
+      c.width = c.height = 180;
+      c.getContext("2d").drawImage(img, 0, 0, 180, 180);
+      return new Promise((r) => c.toBlob(r, "image/png"));
+    }
+
+    const { artist, projects } = await (await fetch("/website/data/projects.json")).json();
+    const only = new URLSearchParams(location.search).get("only"); // ?only=site skips the project renders
+    // Projects listed here get no turntable model, to show the section hiding itself.
+    const NO_MODEL = new URLSearchParams(location.search).get("nomodel")?.split(",") || ["paper-tigers"];
+
+    for (const project of only === "site" ? [] : projects) {
+      const dir = `website/assets/placeholders/${project.id}`;
+      const items = compose(project);
+      for (const pass of ["wireframe", "clay", "lighting", "final"]) {
+        const scene = buildScene(project, items, pass, renderer);
+        await save(`${dir}/${pass}.${FORMAT.ext}`, await shoot(scene, "main"));
+        if (pass === "final") {
+          await save(`${dir}/gallery-1.${FORMAT.ext}`, await shoot(scene, "wide"));
+          await save(`${dir}/gallery-2.${FORMAT.ext}`, await shoot(scene, "close"));
+          await save(`${dir}/gallery-3.${FORMAT.ext}`, await shoot(scene, "low"));
+        }
+      }
+      if (!NO_MODEL.includes(project.id)) await save(`${dir}/model.glb`, await exportModel(project, items));
+      log(`${project.id}: done`);
+    }
+    await save(`website/assets/placeholders/artist/portrait-wireframe.${FORMAT.ext}`, await shoot(bustScene("wireframe"), "bust"));
+    await save(`website/assets/placeholders/artist/portrait.${FORMAT.ext}`, await shoot(bustScene("final"), "bust"));
+    log("portrait: done");
+    await save("website/assets/og-image.jpg", await ogImage(artist));
+    await save("website/assets/apple-touch-icon.png", await touchIcon());
+    log("og image + icon: done");
+    log("ALL DONE");
+    document.title = "DONE";
+  </script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+/* ==========================================================================
+   The work: the project world
+   A tall section with a sticky full-screen stage. Scrolling through the
+   section flies the camera along its path (js/work.js + js/world.js).
+   ========================================================================== */
+
+.work {
+  --stops: 5; /* set from the project count by work.js */
+  position: relative;
+  /* one screen per project plus a lead-in and a run-out */
+  height: calc(100vh * (var(--stops) * 1.15 + 1.5));
+}
+
+.work__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.work__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* System cursor fallback when the gizmo cursor is off (e.g. pen/hybrid devices) */
+html:not(.has-custom-cursor) .work__canvas.is-pointing {
+  cursor: pointer;
+}
+
+/* Same lens vignette as the hero, so the two read as one space */
+.work__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%, transparent 50%, rgba(6, 7, 8, 0.7) 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Section intro: outlined like the hero's wireframe pass, fades as you fly
+   -------------------------------------------------------------------------- */
+
+/* Sits top-left so it never collides with the counter at the bottom */
+.work__intro {
+  position: absolute;
+  left: var(--gutter);
+  top: clamp(84px, 15vh, 150px);
+  z-index: var(--z-ui);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.work__title {
+  margin: 0;
+  font-size: clamp(2.6rem, 7.4vw, 7.5rem);
+  font-weight: 280;
+  font-stretch: 116%;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--accent);
+}
+
+.work__hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin-top: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+}
+
+.work__hint [data-world-count] {
+  color: var(--fg);
+}
+
+.work__hint-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .work__hint-fine { display: none; }
+  .work__hint-touch { display: inline; }
+}
+
+/* --------------------------------------------------------------------------
+   Keyboard route through the world
+   Hidden until a link inside gets focus; then it shows as a small panel,
+   and work.js flies the camera to the focused project.
+   -------------------------------------------------------------------------- */
+
+.work__links {
+  position: fixed;
+  top: calc(var(--gutter) * 0.75 + 3rem);
+  left: var(--gutter);
+  z-index: var(--z-header);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.work__links:focus-within {
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+  padding: 0.9rem 1rem 0.7rem;
+  background: rgba(10, 11, 13, 0.88);
+  border: 1px solid var(--line);
+}
+
+.work__links-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.work__links ol {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.work__links a {
+  display: block;
+  padding: 0.35rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--fg-muted);
+}
+
+.work__links a:focus-visible {
+  color: var(--fg);
+  outline-offset: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Object label: a hairline leader plus title and "Type / Year"
+   JS sets the position; .is-left flips it to the object's left side.
+   -------------------------------------------------------------------------- */
+
+.world-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: var(--z-ui);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+  will-change: transform;
+}
+
+.world-label.is-visible {
+  opacity: 1;
+}
+
+.world-label__line {
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 32px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.world-label.is-visible .world-label__line {
+  transform: scaleX(1);
+}
+
+.world-label__text {
+  position: absolute;
+  left: 42px;
+  top: 0;
+  display: grid;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.world-label.is-left .world-label__line {
+  left: auto;
+  right: 0;
+  transform-origin: right;
+}
+
+.world-label.is-left .world-label__text {
+  left: auto;
+  right: 42px;
+  text-align: right;
+}
+
+/* Small screens: centred under the object, no leader line */
+.world-label.is-below .world-label__line {
+  display: none;
+}
+
+.world-label.is-below .world-label__text {
+  left: 0;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.world-label__title {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.world-label__meta {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Fixed overlay: counter + active project (left), index (right)
+   -------------------------------------------------------------------------- */
+
+.world-ui {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-header);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: var(--gutter);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 0.5s var(--ease-out),
+    transform 0.6s var(--ease-out),
+    visibility 0s linear 0.6s;
+}
+
+.world-ui.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+.world-ui > * {
+  pointer-events: auto;
+}
+
+.counter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.counter__now {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.counter__total {
+  font-size: 0.78rem;
+  color: var(--fg-faint);
+}
+
+.world-ui__title {
+  margin-top: 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  font-stretch: 110%;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.world-ui__actions {
+  display: flex;
+  gap: 1.4rem;
+  margin-top: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.world-ui__open,
+.world-ui__top {
+  position: relative;
+  padding: 0.3rem 0;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color 0.3s var(--ease-out);
+}
+
+.world-ui__open {
+  color: var(--fg);
+}
+
+.world-ui__open::after,
+.world-ui__top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.world-ui__open::after {
+  transform: scaleX(1);
+}
+
+.world-ui__open:hover,
+.world-ui__top:hover,
+.world-ui__top:focus-visible {
+  color: var(--fg);
+}
+
+.world-ui__top:hover::after,
+.world-ui__top:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.world-ui__open:active,
+.world-ui__top:active {
+  color: var(--accent);
+}
+
+/* Mini index */
+.index {
+  position: relative;
+  font-family: var(--font-mono);
+}
+
+.index__toggle {
+  display: none;
+}
+
+.index__list {
+  display: grid;
+  gap: 0.15rem;
+  counter-reset: none;
+  margin: 0;
+}
+
+.index__item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.3rem 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--fg-faint);
+  transition: color 0.3s var(--ease-out);
+}
+
+.index__num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Active marker: a short accent line that draws in before the number */
+.index__item::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.index__item:hover,
+.index__item:focus-visible {
+  color: var(--fg);
+}
+
+.index__item[aria-current="true"] {
+  color: var(--fg);
+}
+
+.index__item[aria-current="true"]::before {
+  transform: scaleX(1);
+}
+
+.index__item:active {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Page transition cover + scroll lock while flying into a project
+   -------------------------------------------------------------------------- */
+
+.page-fade {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  background: var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+html.is-flying body {
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Hero link into the work
+   -------------------------------------------------------------------------- */
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.8rem;
+}
+
+.link-enter {
+  position: relative;
+  padding: 0.35rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition: color 0.3s var(--ease-out);
+}
+
+.link-enter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: left;
+  transition: background-color 0.3s, transform 0.45s var(--ease-out);
+}
+
+.link-enter:hover,
+.link-enter:focus-visible {
+  color: var(--fg);
+}
+
+.link-enter:hover::after,
+.link-enter:focus-visible::after {
+  background: var(--accent);
+}
+
+.link-enter:active {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens: compact overlay, index folds into a toggle
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 820px) {
+  .world-ui {
+    gap: 1rem;
+  }
+
+  .world-ui__title {
+    font-size: 0.9rem;
+  }
+
+  .index__toggle {
+    display: inline-block;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(10, 11, 13, 0.6);
+  }
+
+  .index__toggle[aria-expanded="true"] {
+    border-color: var(--accent);
+  }
+
+  .index__list {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.6rem);
+    min-width: 15rem;
+    padding: 0.8rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, 8px, 0);
+    transition: opacity 0.3s var(--ease-out), transform 0.4s var(--ease-out), visibility 0s linear 0.4s;
+  }
+
+  .world-ui.is-index-open .index__list {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+
+  .index__item {
+    padding: 0.55rem 0;
+    color: var(--fg-muted);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Lite mode (phones, low-power devices): project cards instead of the flight.
+   Each card's final render wipes across its wireframe as it scrolls in.
+   -------------------------------------------------------------------------- */
+
+html.is-lite .work {
+  height: auto;
+  padding: clamp(5rem, 12vh, 8rem) var(--gutter) 2rem;
+}
+
+html.is-lite .work__stage,
+html.is-lite .world-ui,
+html.is-lite .work__links {
+  display: none;
+}
+
+html.is-lite .work__intro {
+  position: static;
+  margin-bottom: clamp(2rem, 6vh, 3rem);
+  pointer-events: auto;
+}
+
+html.is-lite .work__hint-fine,
+html.is-lite .work__hint-touch {
+  display: none;
+}
+
+.cards {
+  display: grid;
+  gap: clamp(3rem, 9vh, 4.5rem);
+  max-width: 960px;
+}
+
+.card__link {
+  display: grid;
+  gap: 1rem;
+}
+
+.card__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+}
+
+.card__wire,
+.card__final {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card__final {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.3s var(--ease-in-out);
+}
+
+.card.is-in .card__final {
+  clip-path: inset(0 0 0 0);
+}
+
+/* The sweep line leading the render */
+.card__media::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--accent);
+  opacity: 0;
+}
+
+.card.is-in .card__media::after {
+  animation: card-sweep 1.3s var(--ease-in-out) forwards;
+}
+
+@keyframes card-sweep {
+  0%   { left: 0; opacity: 1; }
+  90%  { left: calc(100% - 1px); opacity: 1; }
+  100% { left: calc(100% - 1px); opacity: 0; }
+}
+
+.card__text {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0.2rem 0.9rem;
+}
+
+.card__num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--fg-faint);
+}
+
+.card__title {
+  margin: 0;
+  font-size: clamp(1.7rem, 7vw, 3rem);
+  font-weight: 640;
+  font-stretch: 112%;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: font-weight 0.5s var(--ease-out);
+}
+
+.card__meta {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--fg-muted);
+}
+
+.card__link:hover .card__title,
+.card__link:focus-visible .card__title {
+  font-weight: 860;
+}
+
+.card__link:active .card__title {
+  color: var(--accent);
+}
+
+.card__link:focus-visible {
+  outline-offset: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__final {
+    clip-path: none;
+    transition: none;
+  }
+
+  .card.is-in .card__media::after {
+    animation: none;
+  }
+}

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Render failed | Mridul Kotak</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0a0b0d" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <!-- Absolute paths: this page can be served at any URL depth -->
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/cursor.css" />
+  <style>
+    .failed {
+      position: relative;
+      min-height: 100dvh;
+      display: grid;
+      align-content: end;
+      padding: var(--gutter);
+      overflow: hidden;
+    }
+
+    /* The render that never finished: a few tiles made it, one errored */
+    .failed__tiles {
+      position: absolute;
+      inset: var(--gutter);
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      background: radial-gradient(circle at 60% 44%, rgba(236, 235, 230, 0.08), transparent 42%), var(--bg-raised);
+    }
+
+    .failed__tiles span {
+      background: var(--bg);
+    }
+
+    .failed__tiles span.done {
+      background: transparent;
+    }
+
+    .failed__tiles span.error {
+      background:
+        linear-gradient(45deg, transparent calc(50% - 0.5px), var(--accent) 50%, transparent calc(50% + 0.5px)),
+        linear-gradient(-45deg, transparent calc(50% - 0.5px), var(--accent) 50%, transparent calc(50% + 0.5px)),
+        rgba(242, 107, 56, 0.06);
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+    }
+
+    .failed__panel {
+      position: relative;
+      width: min(480px, 100%);
+      padding: 1.4rem 1.5rem 1.3rem;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--fg-muted);
+    }
+
+    .failed__head {
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .failed__head strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .failed h1 {
+      margin: 1.2rem 0 0.4rem;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 7vw, 3.4rem);
+      font-weight: 280;
+      font-stretch: 116%;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+    }
+
+    .failed__stats {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin: 1.2rem 0 0;
+    }
+
+    .failed__stats dt {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-faint);
+    }
+
+    .failed__stats dd {
+      margin: 0.2rem 0 0;
+      color: var(--fg);
+    }
+
+    .failed__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.4rem;
+      margin-top: 1.4rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .failed__actions a {
+      position: relative;
+      padding: 0.3rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg);
+    }
+
+    .failed__actions a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0.3);
+      transform-origin: left;
+      transition: transform 0.45s var(--ease-out);
+    }
+
+    .failed__actions a:hover::after,
+    .failed__actions a:focus-visible::after {
+      transform: scaleX(1);
+    }
+  </style>
+</head>
+<body>
+  <main class="failed">
+    <div class="failed__tiles" aria-hidden="true">
+      <span class="done"></span><span class="done"></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      <span class="done"></span><span class="done"></span><span class="done"></span><span class="error"></span><span></span><span></span><span></span><span></span>
+      <span class="done"></span><span class="done"></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="failed__panel">
+      <p class="failed__head"><strong>Error 404</strong><span>render.log</span></p>
+      <h1>Render failed</h1>
+      <p>Frame not found. This page is not in the scene. It may have moved, or the link is off by a frame.</p>
+      <dl class="failed__stats">
+        <div><dt>Frame</dt><dd>0404</dd></div>
+        <div><dt>Samples</dt><dd>0/256</dd></div>
+        <div><dt>Tiles</dt><dd>7/32</dd></div>
+      </dl>
+      <p class="failed__actions">
+        <a href="/">Back to the void</a>
+        <a href="/#work">See the work</a>
+      </p>
+    </div>
+  </main>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" data-cursor aria-hidden="true">
+    <div class="cursor__gizmo">
+      <span class="cursor__axis cursor__axis--z"></span>
+      <span class="cursor__axis cursor__axis--y"></span>
+      <span class="cursor__axis cursor__axis--x"></span>
+      <span class="cursor__origin"></span>
+    </div>
+  </div>
+  <script type="module">
+    import { initCursor } from "/js/cursor.js";
+    initCursor({ reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
+  </script>
+</body>
+</html>

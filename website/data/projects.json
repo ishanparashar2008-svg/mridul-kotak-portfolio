@@ -1,0 +1,504 @@
+{
+  "artist": {
+    "name": "Mridul Kotak",
+    "role": "3D Animator & Environment Designer",
+    "heroModels": [
+      {
+        "name": "Statue 3",
+        "src": "assets/models/statue-3.glb",
+        "wire": "assets/models/statue-3-wire.glb"
+      }
+    ],
+    "description": "Mridul Kotak is a 3D animator and environment designer building cinematic worlds, characters and motion for film, games and brands.",
+    "showreel": {
+      "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "length": "01:48",
+      "title": "Showreel (placeholder: Big Buck Bunny, Blender Foundation)"
+    },
+    "portrait": {
+      "src": "assets/placeholders/artist/portrait.webp",
+      "wireframe": "assets/placeholders/artist/portrait-wireframe.webp",
+      "alt": "Portrait of Mridul Kotak (placeholder bust)"
+    },
+    "bio": [
+      "Placeholder bio. Mridul is a 3D animator and environment designer who builds spaces you want to stand in and characters you believe are thinking.",
+      "Placeholder. Six years across short film, games and broadcast: blocking shots in greybox, lighting until the mood lands, and animating with patience rather than noise."
+    ],
+    "skills": [
+      {
+        "name": "Blender",
+        "level": "Expert"
+      },
+      {
+        "name": "Maya",
+        "level": "Advanced"
+      },
+      {
+        "name": "Houdini",
+        "level": "Intermediate"
+      },
+      {
+        "name": "Unreal Engine 5",
+        "level": "Advanced"
+      },
+      {
+        "name": "Substance Painter",
+        "level": "Advanced"
+      },
+      {
+        "name": "ZBrush",
+        "level": "Intermediate"
+      },
+      {
+        "name": "After Effects",
+        "level": "Advanced"
+      }
+    ],
+    "experience": [
+      {
+        "years": "2024 - now",
+        "role": "Freelance 3D artist",
+        "company": "Independent"
+      },
+      {
+        "years": "2022 - 2024",
+        "role": "Environment artist",
+        "company": "Northfold Games"
+      },
+      {
+        "years": "2020 - 2022",
+        "role": "Junior animator",
+        "company": "Harrow & Pike Studio"
+      }
+    ],
+    "clients": [
+      "Harrow & Pike Studio",
+      "Northfold Games",
+      "Lumeo Beverages",
+      "Kestrel Motion",
+      "Palisade Films",
+      "Oriel Interactive"
+    ],
+    "availability": "Open to freelance and studio work from January 2027.",
+    "email": "unrealmridul5@gmail.com",
+    "phone": "+91 78988 48824",
+    "socials": [
+      {
+        "label": "Instagram",
+        "url": "https://www.instagram.com/mridul_krtva.kavi/"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/mridulkotak/"
+      },
+      {
+        "label": "Upwork",
+        "url": "https://www.upwork.com/freelancers/~01532f2794539c02fb"
+      },
+      {
+        "label": "YouTube",
+        "url": "https://www.youtube.com/@Mridulkotak"
+      },
+      {
+        "label": "Spotify",
+        "url": "https://open.spotify.com/artist/2gRJLmyIBhbhLamTyszG3t"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "saltwater-cathedral",
+      "title": "Saltwater Cathedral",
+      "year": 2026,
+      "type": "Environment",
+      "discipline": "Environment Design",
+      "role": "Environment design, lighting",
+      "client": "Personal project",
+      "summary": "A flooded gothic nave at low tide. Lighting study built around one shaft of late sun and a lot of wet stone.",
+      "shape": "shard",
+      "finish": "iridescent",
+      "worldModel": "assets/models/world/saltwater-cathedral.glb",
+      "accent": "#6fa8c9",
+      "cover": "assets/placeholders/saltwater-cathedral/final.webp",
+      "hero": "assets/placeholders/saltwater-cathedral/final.webp",
+      "heroAlt": "Saltwater Cathedral, final render (placeholder)",
+      "breakdown": {
+        "wireframe": "assets/placeholders/saltwater-cathedral/wireframe.webp",
+        "clay": "assets/placeholders/saltwater-cathedral/clay.webp",
+        "lighting": "assets/placeholders/saltwater-cathedral/lighting.webp",
+        "final": "assets/placeholders/saltwater-cathedral/final.webp"
+      },
+      "brief": "A personal study: how much story can one shaft of light carry through a flooded nave? The goal was a single still that reads as calm first and ruined second.",
+      "process": [
+        {
+          "title": "Blockout",
+          "text": "Greybox in Blender from reference photos of three coastal churches, locked to a 35mm camera before any detail went in."
+        },
+        {
+          "title": "Surfacing",
+          "text": "Wet stone, algae and tide lines built as layered smart materials, driven by a height mask of the waterline."
+        },
+        {
+          "title": "Lighting",
+          "text": "One sun, volumetric fog and a bounce card. Most of the time went into the balance between the light shaft and the reflections."
+        }
+      ],
+      "tools": [
+        {
+          "name": "Blender",
+          "use": "Modelling, layout"
+        },
+        {
+          "name": "Substance Painter",
+          "use": "Stone and water materials"
+        },
+        {
+          "name": "Unreal Engine 5",
+          "use": "Lighting and final render"
+        }
+      ],
+      "model": "assets/placeholders/saltwater-cathedral/model.glb",
+      "modelAlt": "Saltwater Cathedral scene as an interactive 3D model (placeholder)",
+      "video": {
+        "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+        "poster": "assets/placeholders/saltwater-cathedral/final.webp",
+        "title": "Placeholder clip (Big Buck Bunny, Blender Foundation)"
+      },
+      "gallery": [
+        {
+          "src": "assets/placeholders/saltwater-cathedral/gallery-1.webp",
+          "layout": "full",
+          "alt": "Saltwater Cathedral, wide shot (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/saltwater-cathedral/gallery-2.webp",
+          "layout": "half",
+          "alt": "Saltwater Cathedral, close-up (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/saltwater-cathedral/gallery-3.webp",
+          "layout": "half",
+          "alt": "Saltwater Cathedral, low angle (placeholder)"
+        }
+      ],
+      "placeholder": true
+    },
+    {
+      "id": "kiln",
+      "title": "Kiln",
+      "year": 2025,
+      "type": "Animation",
+      "discipline": "Character Animation",
+      "role": "Lead animator",
+      "client": "Harrow & Pike Studio",
+      "summary": "A ninety second short about a potter and a firing that goes wrong. Keyframe animation, cloth and ember simulation.",
+      "shape": "capsule",
+      "finish": "satin",
+      "worldModel": "assets/models/world/kiln.glb",
+      "accent": "#d9824b",
+      "cover": "assets/placeholders/kiln/final.webp",
+      "hero": "assets/placeholders/kiln/final.webp",
+      "heroAlt": "Kiln, final render (placeholder)",
+      "breakdown": {
+        "wireframe": "assets/placeholders/kiln/wireframe.webp",
+        "clay": "assets/placeholders/kiln/clay.webp",
+        "lighting": "assets/placeholders/kiln/lighting.webp",
+        "final": "assets/placeholders/kiln/final.webp"
+      },
+      "brief": "A ninety second short for Harrow & Pike about a potter whose first big firing goes wrong. The studio wanted weight and patience in the acting, not slapstick.",
+      "process": [
+        {
+          "title": "Layout",
+          "text": "Rough camera and staging in Maya, cut to the scratch voice track before any keyframes."
+        },
+        {
+          "title": "Animation",
+          "text": "Blocked in stepped keys, then splined in passes. Hands and clay contact were animated first, the body after."
+        },
+        {
+          "title": "Effects",
+          "text": "Cloth on the apron and ember sims from the kiln door in Houdini, cached and brought back for Arnold renders."
+        }
+      ],
+      "tools": [
+        {
+          "name": "Maya",
+          "use": "Rigging, animation"
+        },
+        {
+          "name": "Houdini",
+          "use": "Cloth and ember simulation"
+        },
+        {
+          "name": "Arnold",
+          "use": "Rendering"
+        }
+      ],
+      "model": "assets/placeholders/kiln/model.glb",
+      "modelAlt": "Kiln scene as an interactive 3D model (placeholder)",
+      "video": {
+        "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+        "poster": "assets/placeholders/kiln/final.webp",
+        "title": "Placeholder clip (Big Buck Bunny, Blender Foundation)"
+      },
+      "gallery": [
+        {
+          "src": "assets/placeholders/kiln/gallery-1.webp",
+          "layout": "full",
+          "alt": "Kiln, wide shot (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/kiln/gallery-2.webp",
+          "layout": "half",
+          "alt": "Kiln, close-up (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/kiln/gallery-3.webp",
+          "layout": "half",
+          "alt": "Kiln, low angle (placeholder)"
+        }
+      ],
+      "placeholder": true
+    },
+    {
+      "id": "orbital-nursery",
+      "title": "Orbital Nursery",
+      "year": 2025,
+      "type": "Environment",
+      "discipline": "Environment Design",
+      "role": "Environment artist",
+      "client": "Northfold Games",
+      "summary": "A greenhouse ring aboard a generation ship. Modular kit, 41 unique assets and a full day to night cycle.",
+      "shape": "torus",
+      "finish": "metal",
+      "worldModel": "assets/models/world/orbital-nursery.glb",
+      "accent": "#8fc27a",
+      "cover": "assets/placeholders/orbital-nursery/final.webp",
+      "hero": "assets/placeholders/orbital-nursery/final.webp",
+      "heroAlt": "Orbital Nursery, final render (placeholder)",
+      "breakdown": {
+        "wireframe": "assets/placeholders/orbital-nursery/wireframe.webp",
+        "clay": "assets/placeholders/orbital-nursery/clay.webp",
+        "lighting": "assets/placeholders/orbital-nursery/lighting.webp",
+        "final": "assets/placeholders/orbital-nursery/final.webp"
+      },
+      "brief": "Northfold Games needed the greenhouse ring for a generation ship: modular, readable at gameplay distance and able to carry a full day to night cycle.",
+      "process": [
+        {
+          "title": "Kit design",
+          "text": "A modular kit of 41 pieces on a 2m grid, designed so every seam lands on a structural rib."
+        },
+        {
+          "title": "Dressing",
+          "text": "Scanned plants from Megascans mixed with hand-built hydroponic racks to keep the silhouette sci-fi."
+        },
+        {
+          "title": "Day cycle",
+          "text": "Lighting keyed at six times of day, with the ring shadow sweeping the floor as the station turns."
+        }
+      ],
+      "tools": [
+        {
+          "name": "Blender",
+          "use": "Modular kit"
+        },
+        {
+          "name": "Unreal Engine 5",
+          "use": "Assembly, lighting"
+        },
+        {
+          "name": "Quixel Megascans",
+          "use": "Vegetation"
+        }
+      ],
+      "model": "assets/placeholders/orbital-nursery/model.glb",
+      "modelAlt": "Orbital Nursery scene as an interactive 3D model (placeholder)",
+      "video": {
+        "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+        "poster": "assets/placeholders/orbital-nursery/final.webp",
+        "title": "Placeholder clip (Big Buck Bunny, Blender Foundation)"
+      },
+      "gallery": [
+        {
+          "src": "assets/placeholders/orbital-nursery/gallery-1.webp",
+          "layout": "full",
+          "alt": "Orbital Nursery, wide shot (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/orbital-nursery/gallery-2.webp",
+          "layout": "half",
+          "alt": "Orbital Nursery, close-up (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/orbital-nursery/gallery-3.webp",
+          "layout": "half",
+          "alt": "Orbital Nursery, low angle (placeholder)"
+        }
+      ],
+      "placeholder": true
+    },
+    {
+      "id": "paper-tigers",
+      "title": "Paper Tigers",
+      "year": 2024,
+      "type": "Commercial",
+      "discipline": "Commercial Animation",
+      "role": "Animator, lookdev",
+      "client": "Lumeo Beverages",
+      "summary": "Folded paper characters for a 15 second broadcast spot. Stylised rigs, stop-motion timing and hand-painted textures.",
+      "shape": "octahedron",
+      "finish": "glossy",
+      "worldModel": "assets/models/world/paper-tigers.glb",
+      "accent": "#e3b84f",
+      "cover": "assets/placeholders/paper-tigers/final.webp",
+      "hero": "assets/placeholders/paper-tigers/final.webp",
+      "heroAlt": "Paper Tigers, final render (placeholder)",
+      "breakdown": {
+        "wireframe": "assets/placeholders/paper-tigers/wireframe.webp",
+        "clay": "assets/placeholders/paper-tigers/clay.webp",
+        "lighting": "assets/placeholders/paper-tigers/lighting.webp",
+        "final": "assets/placeholders/paper-tigers/final.webp"
+      },
+      "brief": "A 15 second broadcast spot for Lumeo. Everything had to look folded from one sheet of paper and move with a stop-motion rhythm.",
+      "process": [
+        {
+          "title": "Rigs",
+          "text": "Stylised rigs that bend only along fold lines, so no pose ever breaks the paper illusion."
+        },
+        {
+          "title": "Timing",
+          "text": "Animated on twos with held frames, then a small random jitter on every hold to feel hand-shot."
+        }
+      ],
+      "tools": [
+        {
+          "name": "Cinema 4D",
+          "use": "Rigging, animation"
+        },
+        {
+          "name": "Redshift",
+          "use": "Rendering"
+        },
+        {
+          "name": "After Effects",
+          "use": "Compositing"
+        }
+      ],
+      "video": {
+        "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+        "poster": "assets/placeholders/paper-tigers/final.webp",
+        "title": "Placeholder clip (Big Buck Bunny, Blender Foundation)"
+      },
+      "gallery": [
+        {
+          "src": "assets/placeholders/paper-tigers/gallery-1.webp",
+          "layout": "full",
+          "alt": "Paper Tigers, wide shot (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/paper-tigers/gallery-2.webp",
+          "layout": "half",
+          "alt": "Paper Tigers, close-up (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/paper-tigers/gallery-3.webp",
+          "layout": "half",
+          "alt": "Paper Tigers, low angle (placeholder)"
+        }
+      ],
+      "placeholder": true
+    },
+    {
+      "id": "low-tide-motel",
+      "title": "Low Tide Motel",
+      "year": 2024,
+      "type": "Environment",
+      "discipline": "Stylised Environment",
+      "role": "Environment design, lookdev",
+      "client": "Personal project",
+      "summary": "A roadside motel between two storms, built as a single hero shot. Neon, rain and a vending machine that still works.",
+      "shape": "cube",
+      "finish": "satin",
+      "worldModel": "assets/models/world/low-tide-motel.glb",
+      "accent": "#d46a8f",
+      "cover": "assets/placeholders/low-tide-motel/final.webp",
+      "hero": "assets/placeholders/low-tide-motel/final.webp",
+      "heroAlt": "Low Tide Motel, final render (placeholder)",
+      "breakdown": {
+        "wireframe": "assets/placeholders/low-tide-motel/wireframe.webp",
+        "clay": "assets/placeholders/low-tide-motel/clay.webp",
+        "lighting": "assets/placeholders/low-tide-motel/lighting.webp",
+        "final": "assets/placeholders/low-tide-motel/final.webp"
+      },
+      "brief": "A roadside motel caught between two storms, built as a single hero shot to practise wet surfaces and neon in real time.",
+      "process": [
+        {
+          "title": "Shot first",
+          "text": "Composed the final frame before modelling, then built only what the camera sees."
+        },
+        {
+          "title": "Rain",
+          "text": "Layered rain: particles near camera, animated normal maps on the tarmac, and a drip mask on every overhang."
+        }
+      ],
+      "tools": [
+        {
+          "name": "Blender",
+          "use": "Modelling"
+        },
+        {
+          "name": "Substance Designer",
+          "use": "Tarmac and signage"
+        },
+        {
+          "name": "EEVEE",
+          "use": "Real-time render"
+        }
+      ],
+      "model": "assets/placeholders/low-tide-motel/model.glb",
+      "modelAlt": "Low Tide Motel scene as an interactive 3D model (placeholder)",
+      "gallery": [
+        {
+          "src": "assets/placeholders/low-tide-motel/gallery-1.webp",
+          "layout": "full",
+          "alt": "Low Tide Motel, wide shot (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/low-tide-motel/gallery-2.webp",
+          "layout": "half",
+          "alt": "Low Tide Motel, close-up (placeholder)"
+        },
+        {
+          "src": "assets/placeholders/low-tide-motel/gallery-3.webp",
+          "layout": "half",
+          "alt": "Low Tide Motel, low angle (placeholder)"
+        }
+      ],
+      "placeholder": true
+    }
+  ],
+  "_schema": {
+    "shape": "optional. sphere | torus | shard | cube | capsule | octahedron | cone | knot | cylinder (default sphere)",
+    "finish": "optional. satin | metal | iridescent | glossy (default satin)",
+    "worldModel": "optional. path to a small .glb shown in the void instead of the shape (built by 3d/build_models.py). The shape stays as the fallback while it loads or if it fails.",
+    "accent": "optional. colour of the object once rendered, and the accent on its project page",
+    "type": "short label shown on hover, e.g. Environment / 2026",
+    "role": "optional. what the artist did on the project",
+    "hero": "optional. main image at the top of the project page (falls back to breakdown.final, then cover)",
+    "breakdown": "optional. { wireframe, clay, lighting, final } image paths of the SAME shot; any two or more show the section",
+    "model": "optional. path to a .glb for the 3D turntable",
+    "video": "optional. { url, poster, title }. url can be YouTube, Vimeo or a local .mp4/.webm",
+    "gallery": "optional. [{ src, alt, layout: full | half }]",
+    "brief": "optional. text (string or array of paragraphs)",
+    "process": "optional. [{ title, text }] or a string",
+    "tools": "optional. [\"Blender\"] or [{ name, use }]",
+    "heroAlt": "optional. alt text for the hero image",
+    "modelAlt": "optional. description of the 3D model for screen readers",
+    "gallery[].alt": "describe each still for screen readers",
+    "artist.portrait": "{ src, wireframe (optional), alt }",
+    "artist.skills": "[{ name, level }] shown as render settings",
+    "artist.socials": "[{ label, url }]",
+    "artist.phone": "optional. shown as a tap-to-call link under the email",
+    "artist.heroModels": "optional. [{ name, src, wire }] real models for the hero (made with tools/optimize-model.mjs). Empty or missing = the abstract knot."
+  }
+}

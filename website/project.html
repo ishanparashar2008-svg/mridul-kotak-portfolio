@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Project | Mridul Kotak</title>
+  <meta name="description" content="Project by Mridul Kotak, 3D animator and environment designer." />
+  <meta name="theme-color" content="#0a0b0d" />
+  <meta name="color-scheme" content="dark" />
+  <!-- Social sharing: project.js swaps in the project's title, summary and image.
+       (Link previews that do not run JavaScript fall back to these site-wide values.) -->
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Mridul Kotak" />
+  <meta property="og:title" content="Mridul Kotak | 3D Animator &amp; Environment Designer" />
+  <meta property="og:description" content="Cinematic worlds, characters and motion for film, games and brands." />
+  <meta property="og:image" content="/assets/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/cursor.css" />
+  <link rel="stylesheet" href="css/render-frame.css" />
+  <link rel="stylesheet" href="css/project.css" />
+  <link rel="stylesheet" href="css/about.css" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/project.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="./" data-brand data-leave>Mridul Kotak</a>
+    <div class="site-header__right">
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="./#work" data-leave>Work</a></li>
+          <li><a href="./#about" data-leave>About</a></li>
+          <li><a href="./#contact" data-leave>Contact</a></li>
+        </ul>
+      </nav>
+      <button class="sound-toggle" type="button" data-sound-toggle aria-pressed="false" aria-label="Ambient sound">
+        <span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="sound-toggle__label" data-sound-label>Sound off</span>
+      </button>
+    </div>
+  </header>
+
+  <!--
+    Case study. Every section below is optional: project.js removes any
+    section whose field is missing from data/projects.json.
+  -->
+  <main id="main" class="case" data-case>
+
+    <!-- Header + hero image (renders in, bucket by bucket) -->
+    <section class="case-hero">
+      <a class="case__back" href="./" data-case-back data-leave>Back to the void</a>
+      <h1 class="case__title" data-case-title>Project</h1>
+      <dl class="case__meta" data-case-meta></dl>
+
+      <figure class="case-hero__frame render-frame" data-hero-frame>
+        <img class="render-frame__img" data-hero-img alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+        <canvas class="render-frame__canvas" data-hero-canvas aria-hidden="true"></canvas>
+        <p class="render-frame__readout" data-hero-readout aria-hidden="true">Rendering</p>
+      </figure>
+
+      <p class="case__summary" data-case-summary></p>
+    </section>
+
+    <!-- The brief -->
+    <section class="case-text" data-section="brief" aria-labelledby="brief-title">
+      <h2 class="case-label" id="brief-title">Brief</h2>
+      <div class="case-text__body" data-brief></div>
+    </section>
+
+    <!-- Render breakdown: passes (tabs) or compare (slider) -->
+    <section class="breakdown" data-section="breakdown" aria-labelledby="bd-title">
+      <div class="section-head">
+        <h2 class="case-label" id="bd-title">Render breakdown</h2>
+        <div class="seg" role="group" aria-label="Breakdown view">
+          <button class="seg__btn" type="button" data-bd-mode="passes" aria-pressed="true">Passes</button>
+          <button class="seg__btn" type="button" data-bd-mode="compare" aria-pressed="false">Compare</button>
+        </div>
+      </div>
+      <div class="bd-tabs" role="tablist" aria-label="Render pass" data-bd-tabs></div>
+      <div class="bd-stage" id="bd-stage" role="tabpanel" aria-labelledby="bd-title" data-bd-stage></div>
+    </section>
+
+    <!-- 3D turntable -->
+    <section class="turntable" data-section="model" aria-labelledby="tt-title">
+      <div class="section-head">
+        <h2 class="case-label" id="tt-title">Turntable</h2>
+        <div class="seg" role="group" aria-label="Model shading">
+          <button class="seg__btn" type="button" data-tt-shade="wireframe" aria-pressed="false">Wireframe</button>
+          <button class="seg__btn" type="button" data-tt-shade="clay" aria-pressed="false">Clay</button>
+          <button class="seg__btn" type="button" data-tt-shade="material" aria-pressed="true">Material</button>
+        </div>
+      </div>
+      <div class="tt-stage" data-tt-stage>
+        <canvas class="tt-canvas" data-tt-canvas aria-label="Interactive 3D model. Drag sideways to turn it." role="img"></canvas>
+        <p class="tt-status" data-tt-status aria-live="polite"></p>
+        <div class="tt-bar">
+          <p class="tt-hint">Drag to orbit</p>
+          <button class="tt-rotate" type="button" data-tt-rotate aria-pressed="true">Auto-rotate</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- The process -->
+    <section class="case-text" data-section="process" aria-labelledby="process-title">
+      <h2 class="case-label" id="process-title">Process</h2>
+      <div class="case-text__body" data-process></div>
+    </section>
+
+    <!-- Film (loads only when played) -->
+    <section class="video" data-section="video" aria-labelledby="video-title">
+      <h2 class="case-label" id="video-title">Film</h2>
+      <div class="video__frame" data-video-frame></div>
+      <p class="video__caption" data-video-caption></p>
+    </section>
+
+    <!-- Gallery: full-width and two-column images, revealed on scroll -->
+    <section class="gallery" data-section="gallery" aria-labelledby="gallery-title">
+      <h2 class="case-label" id="gallery-title">Stills</h2>
+      <div class="gallery__grid" data-gallery></div>
+    </section>
+
+    <!-- Tools -->
+    <section class="case-text" data-section="tools" aria-labelledby="tools-title">
+      <h2 class="case-label" id="tools-title">Tools</h2>
+      <dl class="tools" data-tools></dl>
+    </section>
+
+    <!-- Footer navigation -->
+    <nav class="next" data-section="next" aria-label="More projects">
+      <a class="next__link" href="#" data-next-link data-leave>
+        <span class="next__dir">Next project</span>
+        <span class="next__title" data-next-title></span>
+        <span class="next__meta" data-next-meta></span>
+      </a>
+      <div class="next__preview" aria-hidden="true">
+        <canvas class="next__canvas" data-next-canvas></canvas>
+        <img class="next__thumb" data-next-thumb alt="" loading="lazy" decoding="async" />
+      </div>
+      <a class="next__back" href="./" data-void-link data-leave>Back to the void</a>
+    </nav>
+  </main>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="page-fade" data-page-fade aria-hidden="true"></div>
+
+  <div class="cursor" data-cursor aria-hidden="true">
+    <div class="cursor__gizmo">
+      <span class="cursor__axis cursor__axis--z"></span>
+      <span class="cursor__axis cursor__axis--y"></span>
+      <span class="cursor__axis cursor__axis--x"></span>
+      <span class="cursor__origin"></span>
+    </div>
+  </div>
+</body>
+</html>

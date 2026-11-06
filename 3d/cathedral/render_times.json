@@ -1,0 +1,114 @@
+[
+  {
+    "when": "2026-10-24 23:15",
+    "preview": true,
+    "seconds": {
+      "desktop/wire": 11.6,
+      "desktop/clay": 12.3,
+      "desktop/lit": 16.6,
+      "desktop/final": 16.9,
+      "mobile/wire": 11.0,
+      "mobile/clay": 11.6,
+      "mobile/lit": 14.7,
+      "mobile/final": 15.2
+    }
+  },
+  {
+    "when": "2026-10-24 23:18",
+    "preview": true,
+    "seconds": {
+      "desktop/wire": 11.8,
+      "desktop/clay": 12.3,
+      "desktop/lit": 16.6,
+      "desktop/final": 17.1,
+      "mobile/wire": 10.9,
+      "mobile/clay": 11.6,
+      "mobile/lit": 14.9,
+      "mobile/final": 15.3
+    }
+  },
+  {
+    "when": "2026-10-24 23:33",
+    "preview": false,
+    "seconds": {
+      "desktop/wire": 56.3,
+      "desktop/clay": 65.3,
+      "desktop/lit": 158.3,
+      "desktop/final": 144.1,
+      "mobile/wire": 45.3,
+      "mobile/clay": 49.1,
+      "mobile/lit": 107.1,
+      "mobile/final": 108.1
+    }
+  },
+  {
+    "when": "2026-10-24 23:52",
+    "preview": true,
+    "seconds": {
+      "desktop/wire": 12.1,
+      "desktop/clay": 13.4,
+      "desktop/lit": 18.0,
+      "desktop/final": 17.9,
+      "desktop/specks": 12.2
+    }
+  },
+  {
+    "when": "2026-10-24 23:55",
+    "preview": true,
+    "seconds": {
+      "desktop/wire": 12.4,
+      "desktop/clay": 13.5,
+      "desktop/lit": 17.1,
+      "desktop/final": 18.1,
+      "desktop/specks": 12.5
+    }
+  },
+  {
+    "when": "2026-10-24 23:58",
+    "preview": true,
+    "seconds": {
+      "desktop/wire": 12.5,
+      "desktop/clay": 13.7,
+      "desktop/lit": 16.9,
+      "desktop/final": 17.5,
+      "desktop/specks": 12.5,
+      "mobile/wire": 12.3,
+      "mobile/clay": 13.7,
+      "mobile/lit": 17.0,
+      "mobile/final": 17.3,
+      "mobile/specks": 12.4
+    }
+  },
+  {
+    "when": "2026-10-25 00:04",
+    "preview": true,
+    "seconds": {
+      "desktop/wire": 12.7,
+      "desktop/clay": 14.8,
+      "desktop/lit": 18.2,
+      "desktop/final": 18.5,
+      "desktop/specks": 14.6,
+      "mobile/wire": 14.1,
+      "mobile/clay": 15.2,
+      "mobile/lit": 18.9,
+      "mobile/final": 20.0,
+      "mobile/specks": 13.8
+    }
+  },
+  {
+    "when": "2026-10-25 00:16",
+    "preview": false,
+    "seconds": {
+      "desktop/wire": 41.7,
+      "desktop/clay": 45.4,
+      "desktop/lit": 120.5,
+      "desktop/final": 117.2,
+      "desktop/specks": 35.1,
+      "mobile/wire": 34.5,
+      "mobile/clay": 35.7,
+      "mobile/lit": 76.9,
+      "mobile/final": 82.1,
+      "mobile/specks": 33.3
+    }
+  }
+]

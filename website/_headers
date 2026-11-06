@@ -1,0 +1,14 @@
+# Netlify headers (work with drag-and-drop, Git and CLI deploys).
+# Files are not fingerprinted, so HTML, CSS, JS and data revalidate on every visit
+# (a cheap 304 when nothing changed).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Images, models and icons: cached for a day (placeholders get swapped for real
+# work at the same paths, so not longer than that).
+/assets/*
+  Cache-Control: public, max-age=86400

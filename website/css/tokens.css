@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Design tokens
+   Every color, font and timing value lives here. Scene colors in
+   js/scene.js read --bg and --accent from this file too.
+   ========================================================================== */
+
+:root {
+  /* --- Surfaces: a near-black void with a slight cool cast (never #000) --- */
+  --bg: #0a0b0d;
+  --bg-raised: #111317;
+  --fg: #ecebe6;          /* warm off-white for type */
+  --fg-muted: #8b8d92;
+  --fg-faint: #53565c;
+  --line: rgba(236, 235, 230, 0.12);
+  --line-strong: rgba(236, 235, 230, 0.28);
+  --clay: #b8b1a6;        /* matte clay tone, shared by the 3D clay pass and the title */
+
+  /* --- Accent: pick ONE and keep it everywhere ---
+     Option A (active) "Render Orange": the colour of a selected object's
+       outline in most 3D apps. Warm, reads as "work in progress", and pops
+       against the cool void.
+     Option B "Viewport Cyan": cooler and more techy, pairs well with the
+       iridescent final material. Swap both lines below to try it:
+       --accent: #5fcfe2;
+       --accent-ink: #06181c;
+  */
+  --accent: #f26b38;
+  --accent-ink: #0a0b0d;  /* text colour on top of the accent */
+  /* Project pages swap --accent for the project's colour; js/project.js
+     copies the site accent here first so 3D wireframes stay on-brand. */
+  --render-accent: #f26b38;
+
+  /* --- Gizmo axis colours (semantic X / Y / Z, not brand colours) --- */
+  --axis-x: #e5484d;
+  --axis-y: #5bb85d;
+  --axis-z: #3e8ef7;
+
+  /* --- Type ---
+     Display: Archivo, a variable grotesk with weight (100-900) and width
+     (62-125%) axes, so the title can "render" from hairline to heavy.
+     UI labels: JetBrains Mono, like a viewport's readouts. */
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  /* --- Space and shape --- */
+  --gutter: clamp(16px, 3.6vw, 56px);
+  --radius: 2px;
+
+  /* --- Motion --- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* --- Layers (kept to a short, explicit list) --- */
+  --z-scene: 0;
+  --z-ui: 10;
+  --z-header: 20;
+  --z-grain: 50;
+  --z-loader: 100;
+  --z-cursor: 200;
+}

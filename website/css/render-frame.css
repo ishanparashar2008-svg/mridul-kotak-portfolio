@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Render frame: an image that "renders in" bucket by bucket
+   (js/case/hero-render.js). The <img> is the real content; the canvas
+   paints over it during the render, then fades away.
+   Used by the case study hero and the About portrait.
+   ========================================================================== */
+
+.render-frame {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  background-color: var(--bg-raised);
+  /* Waiting state: the wireframe pass, if one is given (--wire) */
+  background-image: var(--wire, none);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+}
+
+.render-frame__img,
+.render-frame__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.render-frame__img {
+  object-fit: cover;
+  opacity: 0;
+}
+
+.render-frame.is-rendered .render-frame__img {
+  opacity: 1;
+}
+
+.render-frame__canvas {
+  transition: opacity 0.8s var(--ease-out);
+}
+
+.render-frame.is-rendered .render-frame__canvas {
+  opacity: 0;
+}
+
+.render-frame__readout {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  margin: 0;
+  padding: 0.35rem 0.55rem;
+  background: rgba(10, 11, 13, 0.75);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  white-space: pre;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.render-frame.is-rendered .render-frame__readout {
+  opacity: 0;
+}

@@ -1,0 +1,299 @@
+/* ==========================================================================
+   Watch a frame get made
+   A tall section with a sticky stage. Scroll scrubs a Blender sequence that
+   renders in passes (js/making.js + js/frame-sequence.js). data-stage on
+   .making (wireframe | clay | lit | final) follows the pass, like the hero.
+   Reduced motion and no-JS get one screen with the finished frame.
+   ========================================================================== */
+
+.making {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+}
+
+html.js .making {
+  height: 450vh;
+  height: 450svh;
+}
+
+.making__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+}
+
+.making__canvas,
+.making__still {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.making__canvas {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-out);
+}
+
+.making.is-ready .making__canvas {
+  opacity: 1;
+}
+
+.making__still {
+  display: none;
+  background: var(--bg) center / cover no-repeat;
+  object-fit: cover;
+}
+
+/* Melt the frame's top and bottom edges into the neighbouring sections */
+.making__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, var(--bg), transparent 14%, transparent 80%, var(--bg)),
+    linear-gradient(to top right, rgba(6, 7, 8, 0.7), transparent 45%),
+    radial-gradient(ellipse 90% 85% at 50% 50%, transparent 55%, rgba(6, 7, 8, 0.55) 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Viewport readout (top left): pass name and file, like a 3D app's overlay
+   -------------------------------------------------------------------------- */
+
+.making__hud {
+  position: absolute;
+  left: var(--gutter);
+  top: clamp(84px, 13vh, 130px);
+  z-index: var(--z-ui);
+  padding: 0.7rem 0.85rem 0.65rem;
+  background: rgba(10, 11, 13, 0.78);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.making__passes {
+  display: grid;
+}
+
+/* stacked in one cell; the player crossfades them by scroll progress */
+.making__pass {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.making__pass::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 0.6rem 0.1em 0;
+  background: currentColor;
+}
+
+.making__pass[data-pass="wireframe"] {
+  color: var(--accent);
+}
+
+.making__file {
+  margin-top: 0.45rem;
+  color: var(--fg-faint);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Display line (bottom left). It "renders" with the frame: hairline during
+   the wireframe pass, heavy once the clay arrives. Solid, not outlined, so
+   it reads over a frame full of orange lines.
+   -------------------------------------------------------------------------- */
+
+.making__title {
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(28px, 7vh, 84px);
+  z-index: var(--z-ui);
+  max-width: min(15ch, 60vw);
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  font-size: clamp(2rem, 4.4vw, 4.4rem);
+  font-weight: 200;
+  font-stretch: 116%;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--fg);
+  text-shadow: 0 2px 24px rgba(6, 7, 8, 0.6);
+  pointer-events: none;
+  transition: font-weight 0.9s var(--ease-in-out);
+}
+
+.making:not([data-stage="wireframe"]) .making__title {
+  font-weight: 720;
+}
+
+/* --------------------------------------------------------------------------
+   Render readout (bottom right), the loader panel's little sibling
+   -------------------------------------------------------------------------- */
+
+.making__readout {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(28px, 7vh, 84px);
+  z-index: var(--z-ui);
+  width: min(300px, calc(100% - var(--gutter) * 2));
+  padding: 0.95rem 1.05rem 0.9rem;
+  background: rgba(10, 11, 13, 0.78);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+
+.making__samples {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: var(--fg);
+}
+
+.making__count {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.making__total {
+  color: var(--fg-faint);
+}
+
+.making__bar {
+  height: 1px;
+  margin-top: 0.65rem;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.making__bar span {
+  display: block;
+  height: 100%;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.making[data-stage="wireframe"] .making__bar span {
+  background: var(--accent);
+}
+
+.making__stats {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.85rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.making__stats dt {
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+.making__stats dd {
+  margin: 0.2rem 0 0;
+  color: var(--fg);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Phones: line above the readout, readout full width
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .making__title {
+    bottom: calc(clamp(28px, 7vh, 84px) + 9.5rem);
+    max-width: none;
+    right: var(--gutter);
+  }
+
+  .making__readout {
+    left: var(--gutter);
+    width: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   No JS or reduced motion: one screen, the finished frame, finished readouts
+   -------------------------------------------------------------------------- */
+
+html:not(.js) .making__still--noscript {
+  display: block;
+}
+
+html:not(.js) .making__pass[data-pass="final"],
+html:not(.js) .making__title {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .making {
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .making__still {
+    display: block;
+    background-image: url("../assets/seq/cathedral/desktop/frame_0120.webp");
+  }
+
+  .making__canvas {
+    display: none;
+  }
+
+  .making__pass[data-pass="final"],
+  .making__title {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .making__title {
+    font-weight: 720;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-aspect-ratio: 4/5) {
+  .making__still {
+    background-image: url("../assets/seq/cathedral/mobile/frame_0120.webp");
+  }
+}

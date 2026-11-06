@@ -1,0 +1,19 @@
+# Netlify config for this static site. There is no build step.
+#
+# Drag-and-drop deploys: drop this whole `website` folder on
+# https://app.netlify.com/drop. This file sits at the root of the upload.
+# Git deploys: set the site's Base directory to `website` in Netlify.
+#
+# Response headers live in `_headers` (works with every deploy method).
+# 404.html at the root is served automatically for unknown URLs.
+
+[build]
+  publish = "."
+  command = ""
+
+# Old or mistyped project links go to the project page's own "Missing mesh" state
+# rather than a hard 404, e.g. /project/kiln -> /project.html?id=kiln
+[[redirects]]
+  from = "/project/:id"
+  to = "/project.html?id=:id"
+  status = 301

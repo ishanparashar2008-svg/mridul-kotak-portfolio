@@ -1,0 +1,19 @@
+# Installed or generated; rebuilt on demand
+node_modules/
+__pycache__/
+*.pyc
+
+# Blender auto-backups and render logs
+*.blend1
+*.blend2
+*.log
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+.claude/
+
+# Never commit credentials
+.env
+.env.*
