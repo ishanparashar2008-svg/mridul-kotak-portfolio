@@ -22,7 +22,7 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 WORK = os.path.join(HERE, "cathedral")
 SKILL = os.path.join(os.path.expanduser("~"), ".claude", "skills", "blender-scroll-3d", "scripts")
-PASSES = ["wire", "clay", "lit", "final", "specks"]
+PASSES = ["wire", "clay", "final", "specks"]  # the site has no lighting pass; "lit" still builds on request
 FRAMINGS = {
     "desktop": [],
     "mobile": ["--camera", "CamMobile", "--res", "720x1280"],

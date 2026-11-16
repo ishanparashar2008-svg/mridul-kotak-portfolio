@@ -1,63 +1,168 @@
 /* ==========================================================================
-   Hero
-   The WebGL canvas fills the section; type sits bottom-left and the object
-   floats right. data-stage on .hero (wireframe | clay | lit | final) is set
-   by js/hero.js in sync with the 3D material passes, so the title "renders"
-   alongside the object.
+   Hero: three models on a carousel
+   The section is tall (scroll turns the carousel, js/hero.js); its stage
+   sticks to the screen meanwhile. Layers, back to front:
+     .hero__envs         wireframe and clay environment PNGs (by data-base)
+     .hero__canvas       live 3D (wireframe, clay), transparent
+     .hero__final-layer  final environment + final PNGs (moved by js/hero.js
+                         to follow the 3D), swept in by --sweep
+     .hero__sweep        the accent scanline leading the sweep
+     content, mode switcher
+   data-stage (wireframe | clay | final) is set by js/hero.js in sync with
+   the 3D passes, so the title "renders" alongside the models.
    ========================================================================== */
 
 .hero {
   /* Stage-driven title look (overridden per stage below) */
-  --stage-w: 260;                 /* font weight for this pass */
+  --stage-w: 260;
   --title-fill: transparent;
   --title-stroke: var(--accent);
 
   position: relative;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Two extra screens of scroll: one per carousel step. */
+html.js .hero {
+  height: 300vh;
+  height: 300dvh;
+}
+
+.hero[data-stage="clay"]  { --stage-w: 520; --title-fill: var(--clay); --title-stroke: transparent; }
+.hero[data-stage="final"] { --stage-w: 760; --title-fill: var(--fg);   --title-stroke: transparent; }
+
+.hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
   display: grid;
   align-items: end;
   padding: calc(var(--gutter) * 3) var(--gutter) clamp(28px, 7vh, 84px);
   overflow: hidden;
   isolation: isolate;
+  background: var(--bg);
 }
 
-.hero[data-stage="clay"]  { --stage-w: 460; --title-fill: var(--clay); --title-stroke: transparent; }
-.hero[data-stage="lit"]   { --stage-w: 620; --title-fill: #dcd9d1;    --title-stroke: transparent; }
-.hero[data-stage="final"] { --stage-w: 760; --title-fill: var(--fg);   --title-stroke: transparent; }
+/* ---- Environments under the 3D: wireframe and clay -------------------- */
 
-.hero__canvas {
+.hero__envs,
+.hero__env,
+.hero__canvas,
+.hero__final-layer,
+.hero__finals,
+.hero__final {
   position: absolute;
   inset: 0;
-  z-index: var(--z-scene);
-  display: block;
   width: 100%;
   height: 100%;
 }
 
-/* Lens vignette: pulls the eye to the object and keeps the edges in the void */
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 80% 75% at 62% 46%, transparent 45%, rgba(6, 7, 8, 0.72) 100%),
-    linear-gradient(to top, rgba(6, 7, 8, 0.55), transparent 38%);
+.hero__envs {
+  z-index: 0;
 }
 
-/* No WebGL: a quiet static stand-in for the object */
-.hero.no-webgl::before {
+.hero__env {
+  background: var(--bg) center / cover no-repeat;
+}
+
+.hero__envs .hero__env {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-in-out);
+}
+
+/* data-base is the last pass before final: it stays underneath the final layer. */
+.hero[data-base="wireframe"] .hero__env[data-hero-env="wireframe"],
+.hero[data-base="clay"] .hero__env[data-hero-env="clay"] {
+  opacity: 1;
+}
+
+/* ---- Live 3D -------------------------------------------------------------- */
+
+.hero__canvas {
+  z-index: 1;
+  display: block;
+}
+
+/* ---- Final layer: background + the final PNGs, swept in like a render ----
+   --sweep (0 to 1, set on .hero__stage by js/hero.js) moves a hard-ish edge
+   left to right; an accent scanline leads it with a short glow behind. */
+
+.hero__stage {
+  --sweep: 0;
+  --edge: calc(var(--sweep) * 106% - 3%);
+}
+
+.hero__final-layer {
+  z-index: 2;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--edge) - 3%), transparent var(--edge));
+  mask-image: linear-gradient(90deg, #000 calc(var(--edge) - 3%), transparent var(--edge));
+}
+
+/* No final PNGs: the live 3D plays the final pass, so the layer sits behind it. */
+.hero:not(.has-final-renders) .hero__final-layer {
+  z-index: 0;
+}
+
+.hero__final {
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
+}
+
+.hero__sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--edge);
+  z-index: 2;
+  width: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 14px 1px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease-out);
+}
+
+/* Freshly "rendered" pixels glow for a moment behind the line. */
+.hero__sweep::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 14vw;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 11%, transparent));
+}
+
+.hero.is-sweeping-back .hero__sweep::before {
+  left: 0;
+  right: auto;
+  background: linear-gradient(270deg, transparent, color-mix(in srgb, var(--accent) 9%, transparent));
+}
+
+.hero.is-sweeping .hero__sweep {
+  opacity: 1;
+}
+
+/* Lens vignette and a dark floor under the type, so the name always reads */
+.hero__stage::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 66% 44%, rgba(236, 235, 230, 0.1), transparent 30%);
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 85% 80% at 57% 46%, transparent 50%, rgba(6, 7, 8, 0.6) 100%),
+    linear-gradient(to top right, rgba(6, 7, 8, 0.78), transparent 48%);
 }
 
 .hero__content {
   position: relative;
   z-index: var(--z-ui);
-  max-width: min(62rem, 64vw);
+  max-width: min(40rem, 46vw);
 }
 
 /* --------------------------------------------------------------------------
@@ -65,7 +170,7 @@
    -------------------------------------------------------------------------- */
 
 .hero__title {
-  font-size: clamp(3.1rem, 10.4vw, 11rem);
+  font-size: clamp(3.1rem, 7.4vw, 8.2rem);
   font-weight: var(--stage-w);
   font-stretch: 116%;
   line-height: 0.86;
@@ -244,7 +349,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Small screens: object floats in the upper half, type sits below it
+   Small screens (mobile layout still to be designed for the carousel)
    -------------------------------------------------------------------------- */
 
 @media (max-width: 820px) {
@@ -268,7 +373,7 @@
     display: none;
   }
 
-  .hero::after {
+  .hero__stage::after {
     background:
       radial-gradient(ellipse 110% 70% at 50% 36%, transparent 40%, rgba(6, 7, 8, 0.7) 100%),
       linear-gradient(to top, rgba(6, 7, 8, 0.8), transparent 50%);

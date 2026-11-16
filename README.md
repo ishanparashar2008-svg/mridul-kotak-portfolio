@@ -1,6 +1,6 @@
 # The Render: portfolio of Mridul Kotak
 
-A portfolio that feels like being inside a 3D viewport. The work floats in a dark void and every piece "renders" in passes: wireframe, clay, lit, then the final look.
+A portfolio that feels like being inside a 3D viewport. The work floats in a dark void and every piece "renders" in passes: wireframe, then clay (lit by your cursor), then the final look.
 
 Plain HTML, CSS and JavaScript (ES modules). No build step. Three.js and GSAP load from a CDN through an import map.
 
@@ -44,7 +44,7 @@ Files in `mridul/source-files/` use Git LFS. After cloning on a new machine, run
 
 1. **Make a folder for its files:** `website/assets/work/<slug>/`, where the slug is short, lowercase and uses hyphens, e.g. `neon-harbour`.
 2. **Export the images** (WebP or JPEG, about 1600px wide, ideally 100 to 300 KB each):
-   - the four passes of **one shot**, all the same framing: `wireframe.webp`, `clay.webp`, `lighting.webp`, `final.webp`
+   - the three passes of **one shot**, all the same framing: `wireframe.webp`, `clay.webp`, `final.webp`
    - any stills for the gallery: `still-1.webp`, `still-2.webp`...
 3. **Optional 3D model:** export a `.glb` from Blender (File > Export > glTF 2.0, format "glTF Binary"). Keep it under about 10 MB. To shrink it a lot, run `npx @gltf-transform/cli meshopt model.glb model.glb`. The site loads Meshopt and Draco models.
 4. **Optional film:** a YouTube or Vimeo link, or an `.mp4` in the project folder.
@@ -69,7 +69,6 @@ Files in `mridul/source-files/` use Git LFS. After cloning on a new machine, run
   "breakdown": {
     "wireframe": "assets/work/neon-harbour/wireframe.webp",
     "clay": "assets/work/neon-harbour/clay.webp",
-    "lighting": "assets/work/neon-harbour/lighting.webp",
     "final": "assets/work/neon-harbour/final.webp"
   },
   "model": "assets/work/neon-harbour/model.glb",
@@ -100,22 +99,47 @@ Field notes:
 - `gallery[].layout`: `full` for full width, `half` for two side by side (use them in pairs)
 - JSON is strict: every item needs a comma after it except the last, and there are no comments. If the page goes blank, check the file at https://jsonlint.com
 
-## Hero models (real 3D work in the hero)
+## Hero: three models on a carousel
 
-The hero shows `artist.heroModels` from `projects.json`; with none listed it falls back to the abstract knot. Each model plays the same wireframe, clay, lit and final passes, ending on its own textures.
+The hero holds three models on a turntable-style carousel: one in front, two smaller ones behind it to the left and right. Scrolling turns the carousel two steps (model 2 comes to the front, then model 3), then the page carries on. The models never spin on their own, they only travel round the circle.
 
+On every load the hero plays the intro, about 3.5 seconds once the loader clears: wireframe, then clay, then final. Final "renders" in with an accent scanline sweeping left to right; leaving final sweeps it back. Keys 1 to 3 (or the buttons, bottom right) switch modes. In clay mode the cursor is a light. Scrolling turns the carousel in whatever mode is showing.
+
+| Mode | Models | Background |
+|---|---|---|
+| Wireframe | live 3D (the GLB's wireframe) | `env-wireframe` PNG |
+| Clay | live 3D, matte clay, lit by the cursor | `env-clay` PNG |
+| Final | one pre-rendered PNG per model, moved and scaled to follow the carousel | `env-final` PNG |
+
+Everything lives in `artist.hero` in `projects.json`:
+
+```json
+"hero": {
+  "environments": { "wireframe": "assets/hero/env-wireframe.webp", "clay": "assets/hero/env-clay.webp", "final": "assets/hero/env-final.webp" },
+  "models": [
+    { "name": "Statue 1", "src": "assets/models/statue-1.glb", "wire": "assets/models/statue-1-wire.glb", "final": "assets/hero/final-1.webp", "rotation": 28 },
+    { "name": "Statue 2", "...": "..." },
+    { "name": "Statue 3", "...": "..." }
+  ]
+}
+```
+
+- `src` / `wire`: the live model and its light wireframe copy. Leave them out and that slot shows a placeholder cube (as it does now).
+- `final`: the model rendered in Blender at the **front** slot, transparent background. The site moves and scales this one image to the left and right slots, so it must be shot from exactly the site's camera.
+- `rotation`: which way the model faces, in degrees. Use the same value in Blender.
+- The camera, slot positions and model size are in `website/js/hero-rig.js`. `mridul/HERO-RENDERS.md` gives the same numbers in Blender terms. If the rig changes, the PNGs must be re-rendered.
+- Placeholder art: open `/tools/placeholders/hero.html` on the placeholder server (`node tools/placeholders/server.mjs`). It renders all six images from the rig.
+
+To add a real model:
 1. One-time setup: `cd tools` then `npm install`.
 2. Optimise the model (your original file is never changed):
-   `node tools/optimize-model.mjs "C:\path	o\Model.glb" statue-4`
-   This writes `website/assets/models/statue-4.glb` (textures 1024px WebP, Meshopt geometry) and `statue-4-wire.glb` (a tiny copy for the wireframe pass) and prints the sizes.
-3. Point the hero at it in `projects.json`:
-   `"heroModels": [{ "name": "Statue 4", "src": "assets/models/statue-4.glb", "wire": "assets/models/statue-4-wire.glb" }]`
-
-Options: `--tex 2048` for sharper textures (bigger file), `--wire-error 0.002` for a denser wireframe. The hero shows the first model in the list for now; the three-model layout is still to come.
+   `node tools/optimize-model.mjs "C:\path\to\Model.glb" statue-1`
+   This writes `website/assets/models/statue-1.glb` (textures 1024px WebP, Meshopt geometry) and `statue-1-wire.glb` (a tiny copy for the wireframe pass) and prints the sizes. Options: `--tex 2048` for sharper textures (bigger file), `--wire-error 0.002` for a denser wireframe.
+3. Add `src` and `wire` to that model's entry, then render its `final` PNG in Blender (see `mridul/HERO-RENDERS.md`).
 
 ## Blender scenes (3d/)
 
-The 3D made in Blender lives in `3d/` as Python build scripts. Each scene gets its own script, so everything can be rebuilt and tweaked later. The `.blend` files and renders are build products and can be deleted at any time. The scripts import helpers (`bscroll`) from the **blender-scroll-3d** skill, installed at `~/.claude/skills/blender-scroll-3d`. Blender 5.2 lives at `D:\Blenderlender.exe`; set `BLENDER_PATH` to use another install. Compositing needs Python with Pillow and numpy (`pip install pillow numpy`).
+The 3D made in Blender lives in `3d/` as Python build scripts. Each scene gets its own script, so everything can be rebuilt and tweaked later. The `.blend` files and renders are build products and can be deleted at any time. The scripts import helpers (`bscroll`) from the **blender-scroll-3d** skill, installed at `~/.claude/skills/blender-scroll-3d`. Blender 5.2 lives at `D:\Blender\blender.exe`; set `BLENDER_PATH` to use another install. Compositing needs Python with Pillow and numpy (`pip install pillow numpy`).
 
 ### Watch a frame get made (Saltwater Cathedral)
 
@@ -125,12 +149,12 @@ The section between the hero and the work is a 120-frame shot of a broken fragme
 - one tall lancet window, with light shafts coming through it
 - a section of ribbed vault, plus a few pews and candles
 
-The camera starts on a close three-quarter view and orbits about 70° while the shot renders: wireframe, then clay, then lighting, then final. Each pass takes over the one before in bucket tiles. In the last 15% the camera pulls back and drifts past, so the final frames are empty void and specks, like the top of #work. Scrolling back un-renders it.
+The camera starts on a close three-quarter view and orbits about 70° while the shot renders: wireframe, then clay, then final. Each pass takes over the one before in bucket tiles. In the last 15% the camera pulls back and drifts past, so the final frames are empty void and specks, like the top of #work. Scrolling back un-renders it.
 
-- `3d/build_cathedral.py`: the whole scene, built from code. Tunables sit at the top: colours, camera orbit and drift, sun angle, fog, wire width and speck colour. It writes `3d/cathedral/wire|clay|lit|final|specks.blend`.
+- `3d/build_cathedral.py`: the whole scene, built from code. Tunables sit at the top: colours, camera orbit and drift, sun angle, fog, wire width and speck colour. It writes `3d/cathedral/wire|clay|final|specks.blend`.
   - `specks` holds only the void's star specks and dust (colour and size matched to `js/world.js`), with the fragment as a holdout.
   - The sun reaches the scene only through the window, via an invisible shadow-only screen behind the wall. Fog fades out about 17 m from the fragment, so the shafts dissolve into space and the frame edges stay pure `#0a0b0d`.
-- `3d/compose_cathedral.py`: merges the four passes into the final frames and adds the specks on top of every frame, so the void never changes during a hand-off. The tile schedule is set at the top (`TRANSITIONS`: 22-30%, 45-53%, 68-76%). It writes `website/assets/seq/cathedral/{desktop,mobile}/frame_0001.webp ... frame_0120.webp` plus `manifest.json`, which also carries the schedule the page's readouts use.
+- `3d/compose_cathedral.py`: merges the three passes into the final frames and adds the specks on top of every frame, so the void never changes during a hand-off. The tile schedule is set at the top (`TRANSITIONS`: 26-34%, 58-66%). It writes `website/assets/seq/cathedral/{desktop,mobile}/frame_0001.webp ... frame_0120.webp` plus `manifest.json`, which also carries the schedule the page's readouts use.
 - `3d/render_cathedral.py`: runs everything in one go.
 
 ```
@@ -180,7 +204,7 @@ Every project's case-study images and turntable come from a small Blender dioram
 
 | File | What it is |
 |---|---|
-| `wireframe.webp`, `clay.webp`, `lighting.webp`, `final.webp` | the four passes from one locked camera, 1600x900 |
+| `wireframe.webp`, `clay.webp`, `final.webp` | the three passes from one locked camera, 1600x900 |
 | `gallery-1.webp` | wide shot, 1600x900 |
 | `gallery-2.webp` | close-up, 1200x900 |
 | `gallery-3.webp` | low angle, 1200x900 |
@@ -214,7 +238,7 @@ The `artist` block at the top of `projects.json` drives the hero, the showreel, 
 - [ ] **Void models:** `worldModel` points to generated stand-in models (3d/models/). Swap in Mridul's own low-poly versions when they exist
 - [ ] **Project films:** `video.url` is Big Buck Bunny for four projects
 - [ ] **Alt text:** `heroAlt`, `modelAlt` and `gallery[].alt` say "(placeholder)"
-- [ ] **Cathedral sequence:** a generated stand-in scene. To use a real shot, render its four passes as PNG frames into `3d/cathedral/render/<framing>/<pass>/frame_NNNN.png` and run `python 3d/compose_cathedral.py`
+- [ ] **Cathedral sequence:** a generated stand-in scene. To use a real shot, render its three passes (wire, clay, final, plus specks) as PNG frames into `3d/cathedral/render/<framing>/<pass>/frame_NNNN.png` and run `python 3d/compose_cathedral.py`
 - [ ] **Share image:** `website/assets/og-image.jpg` (regenerate it or design one at 1200 x 630) and its full URL in `index.html`
 - [ ] When everything is replaced, delete `website/assets/placeholders/`
 
@@ -238,7 +262,7 @@ The-Render/
       main.js             boot order
       device.js           lite mode detection (phones, low-power devices)
       loader.js, cursor.js, sound.js, data.js
-      hero.js, scene.js   hero and its 3D knot
+      hero.js, scene.js, hero-rig.js   hero carousel (rig = camera and slots shared with the PNG renders)
       making.js, frame-sequence.js   the Saltwater Cathedral scroll sequence
       showreel.js         full-screen showreel overlay
       work.js, world.js   the void (full) or project cards (lite)

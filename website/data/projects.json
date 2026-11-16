@@ -2,13 +2,30 @@
   "artist": {
     "name": "Mridul Kotak",
     "role": "3D Animator & Environment Designer",
-    "heroModels": [
-      {
-        "name": "Statue 3",
-        "src": "assets/models/statue-3.glb",
-        "wire": "assets/models/statue-3-wire.glb"
-      }
-    ],
+    "hero": {
+      "environments": {
+        "wireframe": "assets/hero/env-wireframe.webp",
+        "clay": "assets/hero/env-clay.webp",
+        "final": "assets/hero/env-final.webp"
+      },
+      "models": [
+        {
+          "name": "Placeholder cube 1",
+          "final": "assets/hero/final-1.webp",
+          "rotation": 28
+        },
+        {
+          "name": "Placeholder cube 2",
+          "final": "assets/hero/final-2.webp",
+          "rotation": -18
+        },
+        {
+          "name": "Placeholder cube 3",
+          "final": "assets/hero/final-3.webp",
+          "rotation": 44
+        }
+      ]
+    },
     "description": "Mridul Kotak is a 3D animator and environment designer building cinematic worlds, characters and motion for film, games and brands.",
     "showreel": {
       "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
@@ -125,7 +142,6 @@
       "breakdown": {
         "wireframe": "assets/placeholders/saltwater-cathedral/wireframe.webp",
         "clay": "assets/placeholders/saltwater-cathedral/clay.webp",
-        "lighting": "assets/placeholders/saltwater-cathedral/lighting.webp",
         "final": "assets/placeholders/saltwater-cathedral/final.webp"
       },
       "brief": "A personal study: how much story can one shaft of light carry through a flooded nave? The goal was a single still that reads as calm first and ruined second.",
@@ -202,7 +218,6 @@
       "breakdown": {
         "wireframe": "assets/placeholders/kiln/wireframe.webp",
         "clay": "assets/placeholders/kiln/clay.webp",
-        "lighting": "assets/placeholders/kiln/lighting.webp",
         "final": "assets/placeholders/kiln/final.webp"
       },
       "brief": "A ninety second short for Harrow & Pike about a potter whose first big firing goes wrong. The studio wanted weight and patience in the acting, not slapstick.",
@@ -279,7 +294,6 @@
       "breakdown": {
         "wireframe": "assets/placeholders/orbital-nursery/wireframe.webp",
         "clay": "assets/placeholders/orbital-nursery/clay.webp",
-        "lighting": "assets/placeholders/orbital-nursery/lighting.webp",
         "final": "assets/placeholders/orbital-nursery/final.webp"
       },
       "brief": "Northfold Games needed the greenhouse ring for a generation ship: modular, readable at gameplay distance and able to carry a full day to night cycle.",
@@ -356,7 +370,6 @@
       "breakdown": {
         "wireframe": "assets/placeholders/paper-tigers/wireframe.webp",
         "clay": "assets/placeholders/paper-tigers/clay.webp",
-        "lighting": "assets/placeholders/paper-tigers/lighting.webp",
         "final": "assets/placeholders/paper-tigers/final.webp"
       },
       "brief": "A 15 second broadcast spot for Lumeo. Everything had to look folded from one sheet of paper and move with a stop-motion rhythm.",
@@ -427,7 +440,6 @@
       "breakdown": {
         "wireframe": "assets/placeholders/low-tide-motel/wireframe.webp",
         "clay": "assets/placeholders/low-tide-motel/clay.webp",
-        "lighting": "assets/placeholders/low-tide-motel/lighting.webp",
         "final": "assets/placeholders/low-tide-motel/final.webp"
       },
       "brief": "A roadside motel caught between two storms, built as a single hero shot to practise wet surfaces and neon in real time.",
@@ -485,7 +497,7 @@
     "type": "short label shown on hover, e.g. Environment / 2026",
     "role": "optional. what the artist did on the project",
     "hero": "optional. main image at the top of the project page (falls back to breakdown.final, then cover)",
-    "breakdown": "optional. { wireframe, clay, lighting, final } image paths of the SAME shot; any two or more show the section",
+    "breakdown": "optional. { wireframe, clay, final } image paths of the SAME shot; any two or more show the section",
     "model": "optional. path to a .glb for the 3D turntable",
     "video": "optional. { url, poster, title }. url can be YouTube, Vimeo or a local .mp4/.webm",
     "gallery": "optional. [{ src, alt, layout: full | half }]",
@@ -499,6 +511,6 @@
     "artist.skills": "[{ name, level }] shown as render settings",
     "artist.socials": "[{ label, url }]",
     "artist.phone": "optional. shown as a tap-to-call link under the email",
-    "artist.heroModels": "optional. [{ name, src, wire }] real models for the hero (made with tools/optimize-model.mjs). Empty or missing = the abstract knot."
+    "artist.hero": "{ environments: { wireframe, clay, final } (one PNG each, rendered with no models), models: [{ name, src, wire, final, rotation }] x3 }. src/wire: GLB for the live wireframe and clay passes (missing = placeholder cube). final: PNG of the model rendered at the front slot. rotation: the model's fixed facing in degrees. Camera and slots: js/hero-rig.js and mridul/HERO-RENDERS.md."
   }
 }

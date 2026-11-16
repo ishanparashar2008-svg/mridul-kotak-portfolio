@@ -5,12 +5,12 @@ A broken fragment of a flooded gothic nave hanging in the same dark void as
 the site's #work section: a slab of floor with two bays of piers and pointed
 arches, one tall lancet window, a section of ribbed vault, a few pews and
 still water that spills off the broken edges in thin falls. Built entirely
-from code and rendered from one camera move in four passes;
+from code and rendered from one camera move in three passes;
 compose_cathedral.py stitches the passes together in bucket tiles so the
 shot "renders" as the visitor scrolls.
 
     blender -b --factory-startup --python-exit-code 1 -P 3d/build_cathedral.py -- --out 3d/cathedral
-    (writes 3d/cathedral/wire.blend, clay.blend, lit.blend, final.blend, specks.blend)
+    (writes 3d/cathedral/wire.blend, clay.blend, final.blend, specks.blend)
 
 Add --passes final to rebuild just one. render_cathedral.py runs the whole
 pipeline (build, render both framings, compose) in one go.
@@ -18,7 +18,8 @@ pipeline (build, render both framings, compose) in one go.
 Passes (same geometry, same cameras; only shading and lights change)
   wire    Wireframe modifier on the fragment, emission #f26b38 on #0a0b0d
   clay    view-layer material override #b8b1a6, soft studio light
-  lit     neutral grey surfaces under the final lighting and light shafts
+  lit     (not used by the site any more; build with --passes lit) neutral grey
+          surfaces under the final lighting and light shafts
   final   stone, mirror water, falls and mist, candles, light shafts
   specks  the void's star specks and dust alone (the fragment is a holdout).
           The compositor adds them to every pass, so the void stays
@@ -1145,7 +1146,7 @@ def build(pass_name, out_dir):
 def main():
     args = bs.cli_args()
     out_dir = os.path.abspath(args[args.index("--out") + 1]) if "--out" in args else os.path.join(os.path.dirname(__file__), "cathedral")
-    passes = args[args.index("--passes") + 1].split(",") if "--passes" in args else ["wire", "clay", "lit", "final", "specks"]
+    passes = args[args.index("--passes") + 1].split(",") if "--passes" in args else ["wire", "clay", "final", "specks"]
     for p in passes:
         build(p, out_dir)
 

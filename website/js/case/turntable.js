@@ -4,6 +4,7 @@
  * - Auto-rotates until the viewer grabs it, then stays where they left it
  *   (the Auto-rotate button turns it back on).
  * - Shading buttons swap Wireframe / Clay / Material, echoing the passes.
+ *   In clay the cursor is a light, as in the hero.
  * - Horizontal drags orbit; vertical swipes still scroll the page on touch.
  *   Wheel zoom is off so the page never gets stuck scrolling inside it.
  * - Renders only while on screen and while the tab is visible.
@@ -22,6 +23,9 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const FIT_RADIUS = 2.2;
+const CURSOR_LIGHT_MAX = 42;  // clay mode's cursor light
+const CURSOR_DEPTH = 3.4;     // how far in front of the camera it slides
+const CURSOR_REST = [-0.45, 0.45]; // upper left, where it waits when the pointer is away
 
 // Draco decoder files live on the same CDN as Three.js; they only download
 // when a model actually uses Draco compression.
@@ -66,7 +70,23 @@ export function initTurntable(section, { src, alt = "", reducedMotion = false, l
   key.shadow.radius = 5;
   const rim = new THREE.DirectionalLight(0xa9bcff, 1.6);
   rim.position.set(4, 3, -5);
-  scene.add(key, rim, new THREE.HemisphereLight(0xe6ebff, 0x1b1813, 0.25));
+  const hemi = new THREE.HemisphereLight(0xe6ebff, 0x1b1813, 0.25);
+  scene.add(key, rim, hemi);
+
+  // Clay mode: the cursor is a light. It rides with the camera, on a plane
+  // in front of it, so it always sits under the pointer whatever the orbit.
+  const cursorLight = new THREE.PointLight(0xfff2e8, 0, 0, 2);
+  camera.add(cursorLight);
+  scene.add(camera);
+  const pointer = new THREE.Vector2(...CURSOR_REST);
+  const pointerTarget = pointer.clone();
+  let cursorTarget = 0;
+  stage.addEventListener("pointermove", (e) => {
+    if (e.pointerType === "touch") return;
+    const r = stage.getBoundingClientRect();
+    pointerTarget.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  });
+  stage.addEventListener("pointerleave", () => pointerTarget.set(...CURSOR_REST));
 
   // Invisible floor that only shows the model's soft shadow.
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.35 }));
@@ -113,6 +133,13 @@ export function initTurntable(section, { src, alt = "", reducedMotion = false, l
       o.castShadow = mode !== "wireframe";
     });
     floor.visible = mode !== "wireframe";
+    cursorTarget = mode === "clay" ? CURSOR_LIGHT_MAX : 0;
+    // Clay drops the studio light to a low fill so the cursor does the modelling.
+    const clayMode = mode === "clay";
+    key.intensity = clayMode ? 0.5 : 2;
+    rim.intensity = clayMode ? 0.5 : 1.6;
+    hemi.intensity = clayMode ? 0.12 : 0.25;
+    scene.environmentIntensity = clayMode ? 0.12 : 0.45;
   }
   shadeButtons.forEach((b) => b.addEventListener("click", () => setShade(b.dataset.ttShade)));
 
@@ -176,8 +203,15 @@ export function initTurntable(section, { src, alt = "", reducedMotion = false, l
 
   let onScreen = false;
   let running = false;
+  const halfTan = () => Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const clock = new THREE.Clock();
   const tick = () => {
+    const dt = Math.min(clock.getDelta(), 0.05);
     controls.update();
+    pointer.lerp(pointerTarget, 1 - Math.exp(-dt * 30)); // keeps up with the system cursor
+    cursorLight.intensity += (cursorTarget - cursorLight.intensity) * (1 - Math.exp(-dt * 8));
+    const hh = CURSOR_DEPTH * halfTan();
+    cursorLight.position.set(pointer.x * hh * camera.aspect, pointer.y * hh, -CURSOR_DEPTH);
     renderer.render(scene, camera);
   };
   function updateRunning() {

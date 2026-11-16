@@ -7,7 +7,7 @@ Render the case-study art for every project from its diorama (Phase 3).
 
 Per project (3d/dioramas/<slug>.py, built around 3d/models/build/<slug>.blend,
 so run 3d/build_models.py first):
-  wireframe.webp clay.webp lighting.webp final.webp   one locked "hero" camera, 1600x900
+  wireframe.webp clay.webp final.webp   one locked "hero" camera, 1600x900
   gallery-1.webp (wide, 1600x900) gallery-2.webp (close-up, 1200x900) gallery-3.webp (low angle, 1200x900)
   model.glb   the diorama for the case-page turntable (skipped for paper-tigers, which has none)
 Needs Pillow (pip install pillow) and `npm install` in tools/ once.
@@ -26,7 +26,8 @@ ROOT = os.path.dirname(HERE)
 SKILL = os.path.join(os.path.expanduser("~"), ".claude", "skills", "blender-scroll-3d", "scripts")
 SLUGS = ["saltwater-cathedral", "kiln", "orbital-nursery", "paper-tigers", "low-tide-motel"]
 NO_TURNTABLE = {"paper-tigers"}
-PASS_FILES = {"wire": "wireframe", "clay": "clay", "lit": "lighting", "final": "final"}
+# The site has no lighting pass any more (wireframe, clay, final only); diorama_kit can still build "lit".
+PASS_FILES = {"wire": "wireframe", "clay": "clay", "final": "final"}
 GALLERY = {"g1": "gallery-1", "g2": "gallery-2", "g3": "gallery-3"}
 QUALITY = 84
 

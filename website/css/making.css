@@ -2,7 +2,7 @@
    Watch a frame get made
    A tall section with a sticky stage. Scroll scrubs a Blender sequence that
    renders in passes (js/making.js + js/frame-sequence.js). data-stage on
-   .making (wireframe | clay | lit | final) follows the pass, like the hero.
+   .making (wireframe | clay | final) follows the pass, like the hero.
    Reduced motion and no-JS get one screen with the finished frame.
    ========================================================================== */
 

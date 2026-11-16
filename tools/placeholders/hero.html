@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hero placeholder generator</title>
+  <style>
+    body { margin: 0; padding: 24px; background: #0a0b0d; color: #ecebe6; font: 13px/1.6 ui-monospace, Consolas, monospace; }
+    canvas { display: block; max-width: 640px; height: auto; margin-top: 16px; border: 1px solid #222; }
+  </style>
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <p>Renders the hero's placeholder art with the site's own stage (website/js/hero-rig.js):
+  three environment backgrounds (no models) and one final PNG per model at the front slot,
+  transparent. Output: website/assets/hero/.</p>
+  <pre id="log"></pre>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+    import { HERO_RIG, slotPosition } from "/website/js/hero-rig.js";
+
+    const log = (m) => (document.getElementById("log").textContent += m + "\n");
+    const BG = new THREE.Color("#0a0b0d");
+    const ACCENT = new THREE.Color("#f26b38");
+    const { width: W, height: H } = HERO_RIG.design;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(1);
+    renderer.setSize(W, H, false);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    const camera = new THREE.PerspectiveCamera(HERO_RIG.camera.fov, W / H, 0.1, 200);
+    camera.position.set(...HERO_RIG.camera.position);
+    camera.lookAt(new THREE.Vector3(...HERO_RIG.camera.target));
+
+    function envMap(intensity) {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      const tex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      pmrem.dispose();
+      return { tex, intensity };
+    }
+
+    /** A cyclorama: floor curving up into a back wall (no horizon line). Open, double-sided ribbon. */
+    function cycGeometry(curveSegs = 48, xSegs = 1, floorSegs = 1, wallSegs = 1) {
+      const R = 5, back = -9, front = 14, top = 16;
+      const prof = []; // [z, y]
+      for (let i = 0; i <= floorSegs; i++) prof.push([front + ((back + R) - front) * (i / floorSegs), 0]);
+      for (let i = 1; i <= curveSegs; i++) {
+        const t = (i / curveSegs) * (Math.PI / 2);
+        prof.push([back + R - R * Math.sin(t), R - R * Math.cos(t)]);
+      }
+      for (let i = 1; i <= wallSegs; i++) prof.push([back, R + (top - R) * (i / wallSegs)]);
+      const pos = [], idx = [];
+      for (let j = 0; j <= xSegs; j++) {
+        const x = -30 + 60 * (j / xSegs);
+        for (const [z, y] of prof) pos.push(x, y, z);
+      }
+      const n = prof.length;
+      for (let j = 0; j < xSegs; j++)
+        for (let i = 0; i < n - 1; i++) {
+          const a = j * n + i, b = a + 1, c = a + n, d = c + 1;
+          idx.push(a, c, b, b, c, d);
+        }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      g.setIndex(idx);
+      g.computeVertexNormals();
+      return g;
+    }
+
+    function cyclorama(material) {
+      material.side = THREE.DoubleSide;
+      const mesh = new THREE.Mesh(cycGeometry(), material);
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    function slotRing(color, opacity) {
+      const { radius, center } = HERO_RIG.carousel;
+      const pts = [];
+      for (let i = 0; i <= 128; i++) {
+        const a = (i / 128) * Math.PI * 2;
+        pts.push(new THREE.Vector3(center[0] + radius * Math.sin(a), 0.005, center[2] + radius * Math.cos(a)));
+      }
+      return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity, toneMapped: false, fog: true }));
+    }
+
+    // ---- Environments (no models) --------------------------------------------
+    function envWireframe() {
+      const scene = new THREE.Scene();
+      scene.background = BG;
+      scene.fog = new THREE.FogExp2(BG, 0.045);
+      const grid = new THREE.GridHelper(80, 80, 0x3a3230, 0x1e2026);
+      grid.material.fog = true;
+      scene.add(grid);
+      scene.add(slotRing(ACCENT, 0.55));
+      // Faint wireframe of the backdrop the other modes stand in.
+      const wire = new THREE.LineSegments(new THREE.WireframeGeometry(cycGeometry(10, 30, 12, 6)),
+        new THREE.LineBasicMaterial({ color: 0x2a2c33, transparent: true, opacity: 0.6, fog: true }));
+      scene.add(wire);
+      // Slot markers: a small cross where each model stands.
+      for (const a of [0, -120, 120]) {
+        const [x, , z] = slotPosition(a);
+        const m = new THREE.LineBasicMaterial({ color: ACCENT, toneMapped: false });
+        const g = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(x - 0.35, 0.01, z), new THREE.Vector3(x + 0.35, 0.01, z),
+          new THREE.Vector3(x, 0.01, z - 0.35), new THREE.Vector3(x, 0.01, z + 0.35),
+        ]);
+        scene.add(new THREE.LineSegments(g, m));
+      }
+      return scene;
+    }
+
+    function envClay() {
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color("#141415");
+      scene.fog = new THREE.FogExp2(new THREE.Color("#141415"), 0.035);
+      const clay = new THREE.MeshStandardMaterial({ color: "#7a756e", roughness: 0.95 });
+      scene.add(cyclorama(clay));
+      scene.add(new THREE.HemisphereLight(0xf2f0ea, 0x2a2724, 0.55));
+      const key = new THREE.SpotLight(0xfff0e0, 260, 30, 0.55, 0.85, 1.6);
+      key.position.set(-4, 11, 8);
+      key.target.position.set(0, 0, 1.5);
+      scene.add(key, key.target);
+      return scene;
+    }
+
+    function envFinal() {
+      const scene = new THREE.Scene();
+      scene.background = BG;
+      scene.fog = new THREE.FogExp2(BG, 0.05);
+      const { tex } = envMap();
+      const floorMat = new THREE.MeshStandardMaterial({ color: "#0e0f12", roughness: 0.32, metalness: 0.35, envMap: tex, envMapIntensity: 0.25 });
+      scene.add(cyclorama(floorMat));
+      // A pool of warm light where the front model stands, a cool wash on the backdrop.
+      const pool = new THREE.SpotLight(0xffe7cf, 420, 30, 0.42, 0.9, 1.7);
+      pool.position.set(-1.5, 12, 7);
+      pool.target.position.set(...slotPosition(0));
+      const rim = new THREE.SpotLight(0x8fa6ff, 160, 40, 0.7, 1, 1.4);
+      rim.position.set(6, 9, -2);
+      rim.target.position.set(-2, 0, -8);
+      scene.add(pool, pool.target, rim, rim.target);
+      return scene;
+    }
+
+    // ---- Final renders: each model alone at the front slot, transparent ----------
+    const FINISHES = [
+      { color: "#d4d2dc", metalness: 1, roughness: 0.22, clearcoat: 1, iridescence: 1, iridescenceIOR: 1.45, iridescenceThicknessRange: [180, 820] },
+      { color: "#c77a4a", metalness: 1, roughness: 0.3, clearcoat: 0.4 },
+      { color: "#3d5f8f", metalness: 0.1, roughness: 0.14, clearcoat: 1 },
+    ];
+
+    function finalModel(i, rotationDeg) {
+      const scene = new THREE.Scene();
+      const { tex } = envMap();
+      const { height, width } = HERO_RIG.model;
+      const s = Math.min(height, width); // unit cube, same fit as js/scene.js
+      const mat = new THREE.MeshPhysicalMaterial({ ...FINISHES[i % 3], envMap: tex, envMapIntensity: 0.45 });
+      const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), mat);
+      cube.castShadow = true;
+      const turn = new THREE.Group();
+      turn.rotation.y = THREE.MathUtils.degToRad(rotationDeg || 0);
+      cube.scale.setScalar(s);
+      cube.position.y = s / 2;
+      turn.add(cube);
+      turn.position.set(...slotPosition(0));
+      scene.add(turn);
+
+      const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.5 }));
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      const key = new THREE.SpotLight(0xffe7cf, 420, 30, 0.42, 0.9, 1.7);
+      key.position.set(-1.5, 12, 7);
+      key.target.position.set(...slotPosition(0));
+      key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048);
+      key.shadow.radius = 6;
+      const rim = new THREE.DirectionalLight(0x9fb4ff, 2.4);
+      rim.position.set(6, 5, -6);
+      const fill = new THREE.HemisphereLight(0xe6ebff, 0x1b1813, 0.12);
+      scene.add(key, key.target, rim, fill);
+      return scene;
+    }
+
+    async function save(path, type, quality) {
+      const blob = await new Promise((r) => renderer.domElement.toBlob(r, type, quality));
+      const res = await fetch(`/save?path=${encodeURIComponent(path)}`, { method: "POST", body: blob });
+      if (!res.ok) throw new Error(`${path}: ${await res.text()}`);
+      log(`${path}  ${(blob.size / 1024).toFixed(0)} KB`);
+    }
+
+    function shoot(scene, transparent) {
+      renderer.setClearColor(0x000000, transparent ? 0 : 1);
+      renderer.render(scene, camera);
+    }
+
+    const { artist } = await (await fetch("/website/data/projects.json")).json();
+    const models = artist.hero?.models || [];
+    const OUT = "website/assets/hero";
+
+    shoot(envWireframe(), false); await save(`${OUT}/env-wireframe.webp`, "image/webp", 0.86);
+    shoot(envClay(), false);      await save(`${OUT}/env-clay.webp`, "image/webp", 0.84);
+    shoot(envFinal(), false);     await save(`${OUT}/env-final.webp`, "image/webp", 0.84);
+    for (let i = 0; i < 3; i++) {
+      shoot(finalModel(i, models[i]?.rotation), true);
+      await save(`${OUT}/final-${i + 1}.webp`, "image/webp", 0.86);
+    }
+    log("ALL DONE");
+    document.title = "DONE";
+  </script>
+</body>
+</html>

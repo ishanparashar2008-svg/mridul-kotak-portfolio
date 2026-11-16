@@ -129,40 +129,56 @@
 
   <main id="main">
     <!-- ============ Hero ============ -->
-    <section class="hero" data-hero data-stage="wireframe" aria-labelledby="hero-title">
-      <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
-
-      <div class="hero__content">
-        <h1 class="hero__title" id="hero-title" data-hero-name>Mridul Kotak</h1>
-        <p class="hero__role" data-hero-role>3D Animator &amp; Environment Designer</p>
-        <div class="hero__actions" data-hero-actions>
-          <a class="btn" href="#showreel" data-hero-reel aria-haspopup="dialog">
-            <span class="btn__icon" aria-hidden="true"></span>
-            <span class="btn__label">Watch Showreel</span>
-            <span class="btn__meta" data-hero-reel-length>01:48</span>
-          </a>
-          <a class="link-enter" href="#work">Enter the work</a>
+    <!-- Three models on a carousel (js/hero.js + js/scene.js, stage in js/hero-rig.js).
+         The section is tall; its stage sticks while scrolling turns the carousel
+         (model 1 -> 2 -> 3), then the page carries on. Each mode has its own
+         environment PNG; Final shows pre-rendered PNGs of the models. -->
+    <section class="hero" data-hero data-stage="wireframe" data-base="wireframe" aria-labelledby="hero-title">
+      <div class="hero__stage">
+        <div class="hero__envs" aria-hidden="true">
+          <div class="hero__env" data-hero-env="wireframe"></div>
+          <div class="hero__env" data-hero-env="clay"></div>
         </div>
-      </div>
+        <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
+        <!-- Final pass: its background and one render per model, swept in over
+             the live 3D behind an accent scanline (js/hero.js). -->
+        <div class="hero__final-layer" data-hero-final-layer aria-hidden="true">
+          <div class="hero__env" data-hero-env="final"></div>
+          <div class="hero__finals" data-hero-finals></div>
+        </div>
+        <div class="hero__sweep" aria-hidden="true"></div>
 
-      <!-- Viewport shading switcher. Auto-advances during the intro, clickable after (keys 1 to 4). -->
-      <div class="hero__modes" data-hero-modes role="group" aria-label="Viewport shading">
-        <button class="mode-btn" type="button" data-mode="wireframe" aria-pressed="true"><span class="mode-btn__key">1</span>Wireframe</button>
-        <button class="mode-btn" type="button" data-mode="clay" aria-pressed="false"><span class="mode-btn__key">2</span>Clay</button>
-        <button class="mode-btn" type="button" data-mode="lit" aria-pressed="false"><span class="mode-btn__key">3</span>Lit</button>
-        <button class="mode-btn" type="button" data-mode="final" aria-pressed="false"><span class="mode-btn__key">4</span>Final</button>
+        <div class="hero__content">
+          <h1 class="hero__title" id="hero-title" data-hero-name>Mridul Kotak</h1>
+          <p class="hero__role" data-hero-role>3D Animator &amp; Environment Designer</p>
+          <div class="hero__actions" data-hero-actions>
+            <a class="btn" href="#showreel" data-hero-reel aria-haspopup="dialog">
+              <span class="btn__icon" aria-hidden="true"></span>
+              <span class="btn__label">Watch Showreel</span>
+              <span class="btn__meta" data-hero-reel-length>01:48</span>
+            </a>
+            <a class="link-enter" href="#work">Enter the work</a>
+          </div>
+        </div>
+
+        <!-- Viewport shading switcher. Auto-advances during the intro, clickable after (keys 1 to 3). -->
+        <div class="hero__modes" data-hero-modes role="group" aria-label="Viewport shading">
+          <button class="mode-btn" type="button" data-mode="wireframe" aria-pressed="true"><span class="mode-btn__key">1</span>Wireframe</button>
+          <button class="mode-btn" type="button" data-mode="clay" aria-pressed="false"><span class="mode-btn__key">2</span>Clay</button>
+          <button class="mode-btn" type="button" data-mode="final" aria-pressed="false"><span class="mode-btn__key">3</span>Final</button>
+        </div>
       </div>
     </section>
 
     <!-- ============ Watch a frame get made ============ -->
     <!-- A Blender shot (3d/build_cathedral.py) that renders in passes as you scroll:
-         wireframe, clay, lighting, final. Frames load late (js/making.js).
+         wireframe, clay, final. Frames load late (js/making.js).
          Readouts show the finished state until the script takes over, which is
          also what no-JS and reduced-motion visitors see. -->
     <section class="making" id="making" data-making data-stage="final" aria-labelledby="making-title"
       data-desktop="assets/seq/cathedral/desktop/manifest.json"
       data-mobile="assets/seq/cathedral/mobile/manifest.json">
-      <h2 class="visually-hidden" id="making-title">Every frame starts as a wireframe: a floating fragment of the Saltwater Cathedral rendering in four passes</h2>
+      <h2 class="visually-hidden" id="making-title">Every frame starts as a wireframe: a floating fragment of the Saltwater Cathedral rendering in three passes</h2>
       <div class="making__stage">
         <canvas class="making__canvas" data-making-canvas aria-hidden="true"></canvas>
         <!-- Reduced motion: the finished frame as a still (css/making.css loads it only then) -->
@@ -174,10 +190,9 @@
 
         <div class="making__hud" aria-hidden="true">
           <p class="making__passes">
-            <span class="making__pass" data-pass="wireframe" data-from="0" data-to="0.26" data-fade="0.006">Pass 01 · Wireframe</span>
-            <span class="making__pass" data-pass="clay" data-from="0.26" data-to="0.49" data-fade="0.006">Pass 02 · Clay</span>
-            <span class="making__pass" data-pass="lit" data-from="0.49" data-to="0.72" data-fade="0.006">Pass 03 · Lighting</span>
-            <span class="making__pass" data-pass="final" data-from="0.72" data-to="1" data-fade="0.006">Pass 04 · Final</span>
+            <span class="making__pass" data-pass="wireframe" data-from="0" data-to="0.30" data-fade="0.006">Pass 01 · Wireframe</span>
+            <span class="making__pass" data-pass="clay" data-from="0.30" data-to="0.62" data-fade="0.006">Pass 02 · Clay</span>
+            <span class="making__pass" data-pass="final" data-from="0.62" data-to="1" data-fade="0.006">Pass 03 · Final</span>
           </p>
           <p class="making__file">saltwater_cathedral.blend · cam_01 · 35mm</p>
         </div>
@@ -193,7 +208,7 @@
           <dl class="making__stats">
             <div><dt>Frame</dt><dd data-making-frame>120/120</dd></div>
             <div><dt>Tiles</dt><dd data-making-tiles>144/144</dd></div>
-            <div><dt>Pass</dt><dd data-making-pass>04/04</dd></div>
+            <div><dt>Pass</dt><dd data-making-pass>03/03</dd></div>
           </dl>
         </div>
       </div>

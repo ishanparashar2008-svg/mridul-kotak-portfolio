@@ -13,30 +13,23 @@
     1
   ],
   "transparent": false,
-  "bytes": 3203644,
+  "bytes": 3398594,
   "passes": [
     "wire",
     "clay",
-    "lit",
     "final"
   ],
   "transitions": [
     [
-      0.22,
-      0.3,
+      0.26,
+      0.34,
       "wire",
       "clay"
     ],
     [
-      0.45,
-      0.53,
+      0.58,
+      0.66,
       "clay",
-      "lit"
-    ],
-    [
-      0.68,
-      0.76,
-      "lit",
       "final"
     ]
   ],

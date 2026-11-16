@@ -13,7 +13,7 @@ from the chosen cameras or saves a stripped copy for the turntable GLB:
 Passes (same set, same locked "hero" camera)
   wire   Wireframe modifier on every set object, emission #f26b38 on #0a0b0d
   clay   view-layer material override #b8b1a6, soft studio light
-  lit    every surface neutral grey under the final lighting (fog and glows kept)
+  lit    (not used by the site any more) every surface neutral grey under the final lighting
   final  the set as built
 
 Object tags (custom property "tags"):

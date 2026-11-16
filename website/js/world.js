@@ -525,8 +525,9 @@ export function createWorld(canvas, {
     // Cursor light sits a little in front of the lens, where the pointer is.
     const lx = pointer.active ? pointer.x * 3.2 : -1.2;
     const ly = pointer.active ? pointer.y * 2 : 1;
-    cursorLight.position.x += (lx - cursorLight.position.x) * (1 - Math.exp(-dt * 8));
-    cursorLight.position.y += (ly - cursorLight.position.y) * (1 - Math.exp(-dt * 8));
+    const follow = 1 - Math.exp(-dt * (pointer.active ? 30 : 6)); // keeps up with the system cursor
+    cursorLight.position.x += (lx - cursorLight.position.x) * follow;
+    cursorLight.position.y += (ly - cursorLight.position.y) * follow;
 
     for (const o of objects) {
       if (!reducedMotion) {

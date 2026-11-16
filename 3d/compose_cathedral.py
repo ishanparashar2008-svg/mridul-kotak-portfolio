@@ -1,5 +1,5 @@
 """
-Stitch the four Saltwater Cathedral passes into one scroll sequence.
+Stitch the three Saltwater Cathedral passes into one scroll sequence.
 
 Every frame starts as the wireframe; each later pass then takes over the
 one before it in bucket tiles, spiralling out from the centre like a Cycles
@@ -30,9 +30,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(HERE, "..", "website")
 
 FRAMES = 120
-PASSES = ["wire", "clay", "lit", "final"]
+PASSES = ["wire", "clay", "final"]
 # (from, to, outgoing pass, incoming pass) as fractions of the scroll
-TRANSITIONS = [(0.22, 0.30, "wire", "clay"), (0.45, 0.53, "clay", "lit"), (0.68, 0.76, "lit", "final")]
+TRANSITIONS = [(0.26, 0.34, "wire", "clay"), (0.58, 0.66, "clay", "final")]
 
 FRAMINGS = {
     # tile grid ~100 px buckets; WebP quality per framing

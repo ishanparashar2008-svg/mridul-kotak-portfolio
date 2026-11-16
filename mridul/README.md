@@ -6,13 +6,16 @@ Put your models, renders and other 3D work here. Nothing in this folder goes on 
 
 | Folder | What goes in it | Example |
 |---|---|---|
-| `models/hero/` | Models for the home page hero | `Statue_3.glb` |
+| `models/hero/` | The three models for the home page hero (see [HERO-RENDERS.md](HERO-RENDERS.md)) | `statue-1.glb` |
+| `renders/hero/` | The hero's six images: 3 backgrounds + 3 final renders ([HERO-RENDERS.md](HERO-RENDERS.md)) | `renders/hero/final-1.png` |
 | `models/projects/<project-name>/` | Models for a project | `models/projects/kiln/potter.glb` |
 | `textures/<project-name>/` | Texture maps that aren't packed into a model | `textures/kiln/clay_normal.png` |
 | `renders/<project-name>/` | Final images, gallery stills and breakdown passes | `renders/kiln/wireframe.png` |
 | `videos/` | Showreel and project clips | `videos/kiln-final.mp4` |
 | `portrait/` | Your photo for the About section | `portrait/mridul.jpg` |
 | `source-files/<project-name>/` | Working files: `.blend`, `.fbx`, `.ma`, `.ztl`, `.hip`, `.psd`, `.zip` | `source-files/kiln/kiln_v12.blend` |
+
+**Hero:** the exact camera, sizes and file names are in [HERO-RENDERS.md](HERO-RENDERS.md).
 
 Use lowercase names with hyphens for project folders (`low-tide-motel`, not `Low Tide Motel`). If a folder doesn't exist yet, make it.
 
@@ -49,7 +52,7 @@ Everything in `source-files/` shares a free 10 GB allowance for storage and anot
 - Keep textures embedded in the `.glb`, at 2K or 4K. They get resized for the web later.
 - Apply transforms before exporting. Position and scale don't matter, they get adjusted on the site.
 - If a model is animated, leave the animation in and mention which clip should play.
-- For a render breakdown, the wireframe, clay, lighting and final images must be the **same shot** with the same framing.
+- For a render breakdown, the wireframe, clay and final images must be the **same shot** with the same framing.
 
 ## Please don't touch
 

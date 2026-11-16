@@ -2,8 +2,8 @@
  * "Watch a frame get made": the Saltwater Cathedral sequence between the
  * hero and the work.
  *
- * One camera move, rendered in Blender four times (wireframe, clay,
- * lighting, final) and stitched into bucket tiles by 3d/compose_cathedral.py.
+ * One camera move, rendered in Blender three times (wireframe, clay,
+ * final) and stitched into bucket tiles by 3d/compose_cathedral.py.
  * Scroll scrubs it, so the shot renders on the way down and un-renders on
  * the way back up. The readouts (pass, samples, frame, tiles) run off the
  * same schedule the frames were composed with (it ships in manifest.json).
@@ -20,7 +20,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const TOTAL_SAMPLES = 256;
-const STAGES = ["wireframe", "clay", "lit", "final"]; // same names as the hero's data-stage
+const STAGES = ["wireframe", "clay", "final"]; // same names as the hero's data-stage
 const pad = (n, len) => String(n).padStart(len, "0");
 
 /**
@@ -47,7 +47,7 @@ export function initMaking({ reducedMotion = false, after = Promise.resolve() } 
   ui.bar.style.transform = "scaleX(0)";
   ui.frame.textContent = "001/120";
   ui.tiles.textContent = "0/144";
-  ui.pass.textContent = "01/04";
+  ui.pass.textContent = `01/${pad(STAGES.length, 2)}`;
 
   // Start once the hero has its model, or as soon as the visitor scrolls away from it.
   const scrolled = new Promise((resolve) => {

@@ -1,7 +1,7 @@
 /**
- * Render breakdown: the same shot in up to four passes.
+ * Render breakdown: the same shot in up to three passes.
  *
- * Passes mode: WIREFRAME / CLAY / LIGHTING / FINAL tabs. Switching wipes
+ * Passes mode: WIREFRAME / CLAY / FINAL tabs. Switching wipes
  *   the new pass in from the left behind a thin accent line (a render sweep).
  * Compare mode: a draggable before/after slider. The chosen tab is the
  *   "before" side; the last pass (usually FINAL) is always the "after" side.
@@ -12,7 +12,6 @@ import { h } from "./dom.js";
 export const PASS_ORDER = [
   { key: "wireframe", label: "Wireframe" },
   { key: "clay", label: "Clay" },
-  { key: "lighting", label: "Lighting" },
   { key: "final", label: "Final" },
 ];
 
