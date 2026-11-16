@@ -17,3 +17,6 @@ desktop.ini
 # Never commit credentials
 .env
 .env.*
+
+# Packaged uploads (rebuilt on demand)
+release/

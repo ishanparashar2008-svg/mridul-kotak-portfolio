@@ -1,0 +1,51 @@
+# Server rules for Apache / LiteSpeed hosting (Spaceship, cPanel and similar).
+# Same behaviour as _headers + netlify.toml on Netlify. Every block is wrapped
+# in IfModule, so a host missing a module skips that block instead of erroring.
+
+# Unknown URLs get the "Render failed: frame not found" page.
+ErrorDocument 404 /404.html
+
+# Don't list folder contents.
+Options -Indexes
+
+# File types the site needs that some servers don't know yet.
+<IfModule mod_mime.c>
+  AddType model/gltf-binary .glb
+  AddType model/gltf+json .gltf
+  AddType image/webp .webp
+  AddType image/svg+xml .svg
+  AddType text/javascript .js .mjs
+  AddType application/json .json
+  AddType video/mp4 .mp4
+  AddType video/webm .webm
+  AddType font/woff2 .woff2
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+  # Pages, styles, scripts and data: check for a newer version on every visit
+  # (files aren't fingerprinted, so this keeps updates showing immediately).
+  <FilesMatch "\.(html|css|js|mjs|json|txt)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # Images, models, video and icons: cache for a day.
+  <FilesMatch "\.(glb|gltf|webp|png|jpe?g|svg|ico|mp4|webm|woff2)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>
+
+# Compress text files on the way out (models and images are already compressed).
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml model/gltf+json text/plain
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Short project links: /project/kiln -> /project.html?id=kiln
+  RewriteRule ^project/([A-Za-z0-9_-]+)/?$ /project.html?id=$1 [R=301,L]
+</IfModule>
