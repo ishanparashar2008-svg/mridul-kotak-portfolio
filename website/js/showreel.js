@@ -22,8 +22,6 @@ export function initShowreel(trigger, showreel) {
   }
 
   const title = showreel.title || "Showreel";
-  const cursor = document.querySelector("[data-cursor]");
-  const cursorHome = cursor?.parentElement; // recorded once, so a quick reopen can't lose it
 
   function open(e) {
     if (e && (e.metaKey || e.ctrlKey || e.shiftKey)) return; // new tab: let the link work
@@ -33,9 +31,6 @@ export function initShowreel(trigger, showreel) {
     frame.replaceChildren(player);
     dialog.showModal();
     document.documentElement.classList.add("is-reel-open");
-    // The dialog sits in the browser's top layer, above every z-index.
-    // Move the custom cursor in with it so it stays visible.
-    if (cursor) dialog.append(cursor);
   }
 
   function close() {
@@ -45,7 +40,6 @@ export function initShowreel(trigger, showreel) {
   dialog.addEventListener("close", () => {
     frame.replaceChildren(); // stops playback
     document.documentElement.classList.remove("is-reel-open");
-    if (cursor && cursorHome) cursorHome.append(cursor);
   });
 
   // Click outside the video (on the dimmed backdrop area) closes.
